@@ -8,7 +8,7 @@ For the benefit of people and the planet, let us start re-using, repairing and r
 This program is intended for re-using loads of computers for the benefit of
 people and the planet:
 
-http://lcrs-embedded.fairdanmark.dk
+http://lcrs.fairdanmark.dk
 
 We hope that you find good use of it and that you
 report any problems or contribute with code on our website
