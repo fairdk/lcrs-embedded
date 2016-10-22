@@ -2,17 +2,15 @@
 Large-scale Computer Reuse Suite (LCRS)
 ===============================
 
-For the benefit of people and the planet, let us start re-using, repairing and refurbishing computers instead of throwing them away
------------------------------------------------------------------------------------------------------------------------------------
+This is the embedded component of LCRS, a Linux kernel with an embedded server written in Python, using HTTP.
 
-This program is intended for re-using loads of computers for the benefit of
-people and the planet:
+You can read more about LCRS in the main repo:
 
-http://lcrs.fairdanmark.dk
+https://github.com/fairdk/lcrs
 
-We hope that you find good use of it and that you
-report any problems or contribute with code on our website
+...and on our website:
 
+https://lcrs.fairdanmark.dk
 
 .. image:: https://img.shields.io/pypi/v/lcrs-embedded.svg
         :target: https://pypi.python.org/pypi/lcrs-embedded
@@ -34,10 +32,3 @@ Software for computer refurbishment workshops: Wipe disks, test hardware, store 
 
 * Free software: GNU General Public License v3
 * Documentation: https://lcrs-embedded.readthedocs.io.
-
-
-Features
---------
-
-* TODO
-
