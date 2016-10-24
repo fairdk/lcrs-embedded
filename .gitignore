@@ -6,6 +6,8 @@ __pycache__/
 # C extensions
 *.so
 
+buildroot/linked-buildroot
+
 # Distribution / packaging
 .Python
 env/
