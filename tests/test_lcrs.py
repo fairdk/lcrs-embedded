@@ -31,4 +31,4 @@ def test_content(runserver):
 
 def test_cli():
 
-    cli.main([])
+    cli.main()
