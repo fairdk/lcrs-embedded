@@ -4,48 +4,20 @@
 Installation
 ============
 
+The embedded LCRS command line is available from within the built images that
+are booted by clients booted from the LCRS PXE server or from ISO images.
 
-Stable release
---------------
+You may invoke it as a classic python library, but it serves no purpose on a
+regular system unless you want to wipe its hard drive.
 
-To install Large-scale Computer Reuse Suite (LCRS), run this command in your terminal:
+To simulate usage, refer to the tests.
 
-.. code-block:: console
+When installing within the embedded system, Buildroot is used. For installing it
+within this environment, a script is called invoking normal python setup
+procedure ``pip install -e .`` or ``python setup.py install``, however it's
+also combined with installation of a relocatable virtualenv.
 
-    $ pip install lcrs-embedded
+The concept is this::
 
-This is the preferred method to install Large-scale Computer Reuse Suite (LCRS), as it will always install the most recent stable release. 
-
-If you don't have `pip`_ installed, this `Python installation guide`_ can guide
-you through the process.
-
-.. _pip: https://pip.pypa.io
-.. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
-
-
-From sources
-------------
-
-The sources for Large-scale Computer Reuse Suite (LCRS) can be downloaded from the `Github repo`_.
-
-You can either clone the public repository:
-
-.. code-block:: console
-
-    $ git clone git://github.com/fairdk/lcrs-embedded
-
-Or download the `tarball`_:
-
-.. code-block:: console
-
-    $ curl  -OL https://github.com/fairdk/lcrs-embedded/tarball/master
-
-Once you have a copy of the source, you can install it with:
-
-.. code-block:: console
-
-    $ python setup.py install
-
-
-.. _Github repo: https://github.com/fairdk/lcrs-embedded
-.. _tarball: https://github.com/fairdk/lcrs-embedded/tarball/master
+    mkdir -p buildroot/linked_buildroot/output/target/usr/bin
+    pip install . -t buildroot/linked_buildroot/output/target/usr/lib/python3.5/site-packages/ --install-option="--install-scripts=buildroot/linked_buildroot/output/target/usr/bin" --upgrade

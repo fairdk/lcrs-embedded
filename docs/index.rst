@@ -1,10 +1,9 @@
-.. lcrs-embedded documentation master file, created by
-   sphinx-quickstart on Tue Jul  9 22:26:36 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to the docs of LCRS embedded CLI
+========================================
 
-Welcome to Large-scale Computer Reuse Suite (LCRS)'s documentation!
-======================================
+This documentation makes sense together with the documentation of the main
+LCRS controller UI, please make sure you are aware of that project before
+reading on...
 
 Contents:
 
@@ -13,7 +12,7 @@ Contents:
 
    readme
    installation
-   usage
+   dev
    contributing
    authorshistory
 

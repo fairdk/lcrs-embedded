@@ -28,6 +28,12 @@ Buildroot settings
 Buildroot features
 ------------------
 
+Before setting up the environment, consider that it takes quite a lot of storage
+space (~6 GB), so you might wanna put it on a different drive.
+
+Furthermore, after building, you cannot relocate. You would have to rebuild.
+This is a well-known issue in Buildroot.
+
 Toolchain:
 
 Remember if you change the configuration of the toolchain, you need to rebuild
@@ -115,7 +121,7 @@ Maybe?
 ~~~~~~
 
  - ramspeed/smp
- - stressng
+ - stress-ng
  
 Filesystem images
 ~~~~~~~~~~~~~~~~~
