@@ -10,16 +10,17 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    # TODO: put package requirements here
+    'docopt'
 ]
 
 test_requirements = [
-    # TODO: put package test requirements here
+    'pytest',
 ]
+
 
 setup(
     name='lcrs-embedded',
-    version='1.0dev',
+    version="1.0dev",
     description=(
         "The embedded component of LCRS - Software for computer refurbishment "
         "workshops: Wipe disks, test hardware, store results in database."
@@ -31,26 +32,28 @@ setup(
     packages=[
         'lcrs_embedded',
     ],
-    package_dir={'lcrs_embedded':
-                 'lcrs_embedded'},
+    package_dir={'lcrs_embedded': 'lcrs_embedded'},
     include_package_data=True,
     install_requires=requirements,
     license="GNU General Public License v3",
     zip_safe=False,
-    keywords='lcrs_embedded',
+    keywords='computer reuse, recycling, logistics',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    entry_points={
+        'console_scripts': [
+            'lcrs_embedded = lcrs_embedded.cli:main'
+        ]
+    },
 )
