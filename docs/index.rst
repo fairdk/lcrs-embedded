@@ -12,7 +12,7 @@ Contents:
 
    readme
    installation
-   dev
+   dev/index
    contributing
    authorshistory
 
