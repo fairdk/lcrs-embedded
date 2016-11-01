@@ -11,3 +11,11 @@ Contents:
 
    buildroot
 
+Getting started
+---------------
+
+In order to build a bootable image with the LCRS CLI, you need to download
+`Buildroot <https://buildroot.org>`__. You also need these dependencies::
+
+    sudo apt-get install build-essential ncurses-base ncurses-bin libncurses5-dev dialog gcc-multilib g++ g++-multilib
+
