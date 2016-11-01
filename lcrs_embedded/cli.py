@@ -18,7 +18,7 @@ from logging import config as logging_config
 from docopt import docopt
 
 from . import __version__
-from .http_server import server
+from .http_server import serve
 
 logger = logging.getLogger(__name__)
 
@@ -40,12 +40,9 @@ def main():
         __doc__,
         version='LCRS embedded CLI v. {}'.format(__version__)
     )
-
     port = arguments.get('--port', None) or 8000
-
     setup_logging(debug=arguments.get('--debug', False))
-
-    server(port)
+    serve(port)
 
 
 if __name__ == '__main__':

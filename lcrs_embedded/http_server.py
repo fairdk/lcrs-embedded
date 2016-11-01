@@ -9,6 +9,9 @@ from .utils.http import JSONRequestHandler, ThreadingSimpleServer
 logger = logging.getLogger(__name__)
 
 
+__active = True
+
+
 class LCRSRequestHandler(JSONRequestHandler):
     server_version = "LCRS/" + __version__
     static_srv = settings.HTTP_SRV_PATH
@@ -21,10 +24,8 @@ class LCRSRequestHandler(JSONRequestHandler):
         )
 
 
-def server(port):
-
-    host = '0.0.0.0'  # socket.gethostname()
-
+def serve(port=8000, host='0.0.0.0'):
+    global __active
     server = ThreadingSimpleServer(('0.0.0.0', port), LCRSRequestHandler)
     logger.info(
         "Serving HTTP traffic on http://{host}:{port}".format(
@@ -32,8 +33,18 @@ def server(port):
         )
     )
     try:
-        while 1:
+        while __active:
             sys.stdout.flush()
             server.handle_request()
     except KeyboardInterrupt:
-        print("\nShutting down server per users request.")
+        logger.info(
+            "User stopped server"
+        )
+
+
+def stop():
+    global __active
+    logger.info(
+        "Asking HTTP server to stop"
+    )
+    __active = False
