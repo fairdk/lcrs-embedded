@@ -4,14 +4,13 @@ import threading
 import time
 
 import pytest
-from lcrs_embedded import cli, http_server
+from lcrs_embedded import http_server
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='session')
 def runserver():
-    cli.setup_logging(debug=True)
     serve_thread = threading.Thread(
         target=http_server.serve,
         kwargs={'port': 8989}
