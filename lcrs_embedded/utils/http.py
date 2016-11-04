@@ -5,21 +5,23 @@ import os
 import posixpath
 import re
 import select
+import sys
 import urllib
 from http import HTTPStatus
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from socketserver import ThreadingMixIn
 
 import pkg_resources
+
 
 logger = logging.getLogger(__name__)
 
 
-class ThreadingSimpleServer(ThreadingMixIn, HTTPServer):
+class SimpleServer(HTTPServer):
 
-    # Decides how threads will act upon termination of the
-    # main process
-    daemon_threads = True
+    def handle_error(self, request, client_address):
+        HTTPServer.handle_error(self, request, client_address)
+        # Exception in request handling, we quit
+        sys.exit(123)
 
 
 class JSONRequestHandler(SimpleHTTPRequestHandler):

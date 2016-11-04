@@ -18,12 +18,12 @@ from logging import config as logging_config
 from docopt import docopt
 
 from . import __version__
-from .http_server import serve
+from .server import serve
 
 logger = logging.getLogger(__name__)
 
 
-def setup_logging(debug=False):
+def setup_logging(debug=False, test=False):
     """Configures logging in cases where a Django environment is not supposed
     to be configured"""
     from . import settings
@@ -31,6 +31,8 @@ def setup_logging(debug=False):
         settings.DEBUG = True
     settings.LOGGING['handlers']['console']['level'] = 'DEBUG'
     settings.LOGGING['loggers']['lcrs_embedded']['level'] = 'DEBUG'
+    if debug:
+        settings.LOGGING['loggers']['tests']['level'] = 'DEBUG'
     logging_config.dictConfig(settings.LOGGING)
     logger.debug("Debug mode is on!")
 

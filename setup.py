@@ -16,6 +16,7 @@ requirements = [
 
 test_requirements = [
     'pytest',
+    'requests',
 ]
 
 

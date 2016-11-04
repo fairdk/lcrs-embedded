@@ -84,6 +84,10 @@ LOGGING = {
         'lcrs_embedded': {
             'handlers': ['console', 'file', 'file_debug'],
             'level': 'INFO',
+        },
+        'tests': {
+            'handlers': ['console', 'file', 'file_debug'],
+            'level': 'CRITICAL',
         }
     }
 }
