@@ -1,4 +1,3 @@
-import io
 import json
 import logging
 import os
@@ -51,10 +50,8 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(content_length))
         self.end_headers()
 
-        f = io.BytesIO()
-        f.write(body.encode("utf-8"))
-        f.seek(0)
-        self.copyfile(f, self.wfile)
+        self.wfile.write(body.encode("utf-8"))
+        self.wfile.flush()
 
     def log_message(self, fmt, *args):
         logger.debug("{addr} {dtm} - {msg}".format(

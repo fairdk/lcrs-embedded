@@ -1,8 +1,11 @@
 import logging
 import os
+from logging import config as logging_config
+
+__logger = logging.getLogger(__name__)
+
 
 DEBUG = True
-
 
 RUNTIME_DATA = "/tmp/lcrs_embedded"
 
@@ -91,3 +94,18 @@ LOGGING = {
         }
     }
 }
+
+
+def setup_logging(debug=False, test=False):
+    """Configures logging in cases where a Django environment is not supposed
+    to be configured"""
+    global DEBUG, LOGGING
+    if debug:
+        DEBUG = True
+        LOGGING['handlers']['console']['level'] = 'DEBUG'
+        LOGGING['loggers']['lcrs_embedded']['level'] = 'DEBUG'
+    if test:
+        LOGGING['handlers']['console']['level'] = 'DEBUG'
+        LOGGING['loggers']['tests']['level'] = 'DEBUG'
+    logging_config.dictConfig(LOGGING)
+    __logger.debug("Debug mode is on!")

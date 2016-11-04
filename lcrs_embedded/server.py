@@ -17,38 +17,32 @@ logger = logging.getLogger(__name__)
 __active = True
 
 
-class JobHandlerMixin:
+class Scheduler:
     """
     NB! Call init_mixin in the __init__ of the inheritor
     """
 
-    def init_mixin(self):
+    def __init__(self):
+        logger.debug("Initialized a scheduler")
         self.job_id_counter = 0
         self.jobs = {}
         self.job_ids = []
         self.job_lock = threading.RLock()
 
     def job_id(self):
-        self.job_lock.acquire()
+        """
+        This method isn't tread safe
+        """
         _job_id = self.job_id_counter + 1
         self.job_id_counter = _job_id
         self.job_ids.append(_job_id)
-        self.job_lock.release()
         return _job_id
 
-    def respond_job_id(self, job_id):
-        """
-        Sends back a response containing a job id
-        """
-        self.respond(
-            content_type="application/json",
-            body=json.dumps({'job_id': job_id}),
-        )
-
+    @thread_safe_method("job_lock")
     def add_job(self, JobType, *args, **kwargs):
         output_queue = Queue()
         job_id = self.job_id()
-        t = JobType(
+        job_thread = JobType(
             output_queue,
             job_id,
             target=lambda: logger.debug("Called an empty target"),
@@ -56,13 +50,16 @@ class JobHandlerMixin:
             kwargs=kwargs
         )
         self.jobs[job_id] = {
-            'thread': t,
+            'job': job_thread,
             'output_queue': output_queue,
         }
         return job_id
 
 
-class LCRSRequestHandler(JobHandlerMixin, JSONRequestHandler):
+scheduler = Scheduler()
+
+
+class LCRSRequestHandler(JSONRequestHandler):
     """
     This is where post requests are handled. A request for /api/v1/test will
     resolve to calling api_test() - methods are responsible for generating
@@ -77,14 +74,21 @@ class LCRSRequestHandler(JobHandlerMixin, JSONRequestHandler):
     static_srv = settings.HTTP_SRV_PATH
 
     def __init__(self, *args, **kwargs):
-        JobHandlerMixin.init_mixin(self)
+        self.scheduler = scheduler
         super(LCRSRequestHandler, self).__init__(*args, **kwargs)
 
-    @thread_safe_method("job_lock")
     @threaded_api_request()
     def api_test(self, **kwargs):
-        raise Exception("I'm broken")
         logger.debug('api_test called, kwargs: {}'.format(kwargs))
+
+    def respond_job_id(self, job_id):
+        """
+        Sends back a response containing a job id
+        """
+        self.respond(
+            content_type="application/json",
+            body=json.dumps({'job_id': job_id}),
+        )
 
 
 def serve(port=8000, host='0.0.0.0'):

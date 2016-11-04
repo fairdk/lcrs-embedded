@@ -14,8 +14,9 @@ def threaded_api_request(JobType=Job):
             """
             :param: instance: JSONRequestHandler instance
             """
-            job_id = instance.add_job(JobType)
+            job_id = instance.scheduler.add_job(JobType)
             instance.respond_job_id(job_id)
+            return method(instance, *args, **kwargs)
 
         return wrapper
 
@@ -30,8 +31,9 @@ def thread_safe_method(lock_attr):
         def wrapper(instance, *args, **kwargs):
             lock = getattr(instance, lock_attr)
             lock.acquire()
-            method(instance, *args, **kwargs)
+            return_value = method(instance, *args, **kwargs)
             lock.release()
+            return return_value
         return wrapper
 
     return outer_wrapper

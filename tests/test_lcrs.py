@@ -4,17 +4,16 @@ import threading
 import time
 
 import pytest
-from lcrs_embedded import cli, server
 
 from . import utils
 
 logger = logging.getLogger(__name__)
 
-cli.setup_logging(debug=True, test=True)
-
 
 @pytest.fixture
 def runserver(scope="session"):
+    from lcrs_embedded import server, settings
+    settings.setup_logging(debug=True, test=True)
     serve_thread = threading.Thread(
         target=server.serve,
         kwargs={'port': utils.SERVER_TEST_PORT, 'host': utils.SERVER_HOST}
