@@ -61,7 +61,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source lcrs_embedded py.test
+	coverage run --source lcrs_embedded -m py.test
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
