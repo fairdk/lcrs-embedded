@@ -1,5 +1,6 @@
 import logging
 import os
+import queue
 from logging import config as logging_config
 
 __logger = logging.getLogger(__name__)
@@ -12,6 +13,8 @@ RUNTIME_DATA = "/tmp/lcrs_embedded"
 os.makedirs(RUNTIME_DATA, 0o755, True)
 
 HTTP_SRV_PATH = RUNTIME_DATA
+
+EXCEPTION_QUEUE = queue.Queue()
 
 
 class RequireDebugFalse(logging.Filter):

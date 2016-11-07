@@ -169,3 +169,12 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
         if trailing_slash:
             path += '/'
         return path
+
+    def respond_job_id(self, job_id):
+        """
+        Sends back a response containing a job id
+        """
+        self.respond(
+            content_type="application/json",
+            body=json.dumps({'job_id': job_id}),
+        )

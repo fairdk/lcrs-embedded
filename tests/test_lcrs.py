@@ -1,34 +1,30 @@
-#!/usr/bin/env python
 import logging
-import threading
-import time
+from threading import ThreadError
 
 import pytest
 
+from . import *  # noqa  # This loads the fixtures that are in __init__.py
 from . import utils
 
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture
-def runserver(scope="session"):
-    from lcrs_embedded import server, settings
-    settings.setup_logging(debug=True, test=True)
-    serve_thread = threading.Thread(
-        target=server.serve,
-        kwargs={'port': utils.SERVER_TEST_PORT, 'host': utils.SERVER_HOST}
-    )
-    serve_thread.setDaemon(True)
-    serve_thread.start()
-    # Wait for server to actually start
-    time.sleep(0.1)
-    yield
-    server.stop()
-
-
-def test_api(runserver):
-    """Sample pytest test function with the pytest fixture as an argument.
+def test_nonexisting_api(runserver):
+    """
+    Sample pytest test function with the pytest fixture as an argument.
     """
     logger.info("Testing the API...")
-    utils.request_api_endpoint("/api/v1/test/")
+    with pytest.raises(utils.WrongStatusCode):
+        utils.request_api_endpoint("/api/v1/doesnotexist/")
+    logger.info("Done with that")
+
+
+def test_fail_api(runserver):
+    """
+    Calls the failing API endpoint, which should catch an exception in the
+    remote thread.
+    """
+    logger.info("Testing the API...")
+    with pytest.raises(ThreadError):
+        utils.request_api_endpoint("/api/v1/fail/")
     logger.info("Done with that")

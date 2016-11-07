@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import json
 import logging
 import sys
 import threading
@@ -8,7 +7,7 @@ from queue import Queue
 from lcrs_embedded.utils.decorators import (thread_safe_method,
                                             threaded_api_request)
 
-from . import __version__, settings
+from . import __version__, jobs, settings
 from .utils.http import JSONRequestHandler, SimpleServer
 
 logger = logging.getLogger(__name__)
@@ -41,14 +40,18 @@ class Scheduler:
     @thread_safe_method("job_lock")
     def add_job(self, JobType, *args, **kwargs):
         output_queue = Queue()
+        exception_queue = settings.EXCEPTION_QUEUE
         job_id = self.job_id()
         job_thread = JobType(
             output_queue,
+            exception_queue,
             job_id,
             target=lambda: logger.debug("Called an empty target"),
             args=args,
             kwargs=kwargs
         )
+        job_thread.setDaemon(True)
+        job_thread.start()
         self.jobs[job_id] = {
             'job': job_thread,
             'output_queue': output_queue,
@@ -77,18 +80,13 @@ class LCRSRequestHandler(JSONRequestHandler):
         self.scheduler = scheduler
         super(LCRSRequestHandler, self).__init__(*args, **kwargs)
 
-    @threaded_api_request()
-    def api_test(self, **kwargs):
-        logger.debug('api_test called, kwargs: {}'.format(kwargs))
-
-    def respond_job_id(self, job_id):
+    @threaded_api_request(jobs.FailJob)
+    def api_fail(self, **kwargs):
         """
-        Sends back a response containing a job id
+        For testing purposes, here's a call that always fails. We need to be
+        sure that tests also fail in that case.
         """
-        self.respond(
-            content_type="application/json",
-            body=json.dumps({'job_id': job_id}),
-        )
+        logger.debug('api_fail called, kwargs: {}'.format(kwargs))
 
 
 def serve(port=8000, host='0.0.0.0'):
