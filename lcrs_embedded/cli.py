@@ -10,8 +10,6 @@ Options:
   -d --debug    Turn of debug messages
 
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import logging
 
 from docopt import docopt
@@ -21,10 +19,11 @@ from . import __version__, settings
 logger = logging.getLogger(__name__)
 
 
-def main():
+def main(*args):
     arguments = docopt(
         __doc__,
-        version='LCRS embedded CLI v. {}'.format(__version__)
+        version='LCRS embedded CLI v. {}'.format(__version__),
+        argv=args or None,
     )
     port = arguments.get('--port', None) or 8000
     settings.setup_logging(debug=arguments.get('--debug', False))
