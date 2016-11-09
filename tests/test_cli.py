@@ -23,7 +23,9 @@ def lcrs_subprocess(command_args=""):
         stderr=subprocess.PIPE,
     )
     # Give the new process enough time to start, coverage is also started
-    time.sleep(0.3)
+    # Todo... how can we replace this with a better check? 0.8 is because of
+    # Travis slowness..
+    time.sleep(0.8)
     p.send_signal(signal.SIGINT)
     stdout, stderr = p.communicate()
     if p.returncode > 0:
