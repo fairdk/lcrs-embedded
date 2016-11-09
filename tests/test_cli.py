@@ -4,6 +4,9 @@ import subprocess
 import sys
 import time
 
+import pytest
+from argh.exceptions import CommandError
+
 
 def lcrs_subprocess(command_args=""):
     """
@@ -15,24 +18,34 @@ def lcrs_subprocess(command_args=""):
         interpreter = "coverage run -p"
     except ImportError:
         interpreter = sys.executable
-    return subprocess.Popen(
+    p = subprocess.Popen(
         shlex.split(interpreter + " -m lcrs_embedded {}".format(command_args)),
+        stderr=subprocess.PIPE,
     )
+    # Give the new process enough time to start, coverage is also started
+    time.sleep(0.3)
+    p.send_signal(signal.SIGINT)
+    stdout, stderr = p.communicate()
+    if p.returncode > 0:
+        raise CommandError(
+            (
+                "Non-zero returncode. Returncode was {}.\n\nstdout:\n{}"
+                "\n\nstderr:\n{}"
+            ).format(
+                p.returncode,
+                stdout,
+                stderr,
+            )
+        )
+    return p
 
 
 def test_cli():
-    with lcrs_subprocess(" --port 42862") as p:
-        # Give the new process enough time to start, coverage is also started
-        time.sleep(0.5)
-        p.send_signal(signal.SIGINT)
-        p.communicate()
-        time.sleep(1)
-        assert p.returncode == 0, "Return code was {}".format(p.returncode)
+    with lcrs_subprocess(" --port 42862"):
+        time.sleep(0.1)
 
 
 def test_invalid_cli():
-    with lcrs_subprocess("invalid arguments") as p:
-        time.sleep(0.1)
-        p.send_signal(signal.SIGINT)
-        p.communicate()
-        assert p.returncode != 0, "Return code was {}".format(p.returncode)
+    with pytest.raises(CommandError):
+        with lcrs_subprocess("invalid arguments"):
+            time.sleep(0.1)

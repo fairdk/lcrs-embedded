@@ -17,6 +17,7 @@ requirements = [
 test_requirements = [
     'pytest',
     'requests',
+    'coverage',
 ]
 
 
