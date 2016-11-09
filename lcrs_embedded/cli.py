@@ -26,6 +26,7 @@ def main(*args):
         argv=args or None,
     )
     port = arguments.get('--port', None) or 8000
+    port = int(port)
     settings.setup_logging(debug=arguments.get('--debug', False))
 
     from .server import serve

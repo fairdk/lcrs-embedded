@@ -1,3 +1,4 @@
+import json
 import logging
 from threading import ThreadError
 
@@ -16,7 +17,17 @@ def test_nonexisting_api(runserver):
     logger.info("Testing the API...")
     with pytest.raises(utils.WrongStatusCode):
         utils.request_api_endpoint("/api/v1/doesnotexist/")
-    logger.info("Done with that")
+
+
+def test_status_api(runserver):
+    """
+    Calls the failing API endpoint, which should catch an exception in the
+    remote thread.
+    """
+    logger.info("Testing the API status...")
+    response = utils.request_api_endpoint("/api/v1/status/")
+    response = response.content.decode("utf-8")
+    assert json.loads(response)['state_id'] == "IDLE"
 
 
 def test_fail_api(runserver):
@@ -27,4 +38,3 @@ def test_fail_api(runserver):
     logger.info("Testing the API...")
     with pytest.raises(ThreadError):
         utils.request_api_endpoint("/api/v1/fail/")
-    logger.info("Done with that")

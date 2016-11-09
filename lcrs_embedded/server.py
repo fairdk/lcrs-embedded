@@ -1,19 +1,18 @@
-#!/usr/bin/env python3
+import json
 import logging
-import sys
 import threading
 from queue import Queue
 
 from lcrs_embedded.utils.decorators import (thread_safe_method,
                                             threaded_api_request)
 
-from . import __version__, jobs, settings
+from . import __version__, jobs, protocol, settings
 from .utils.http import JSONRequestHandler, SimpleServer
 
 logger = logging.getLogger(__name__)
 
 
-__active = True
+__server_instances = {}
 
 
 class Scheduler:
@@ -88,19 +87,38 @@ class LCRSRequestHandler(JSONRequestHandler):
         """
         logger.debug('api_fail called, kwargs: {}'.format(kwargs))
 
+    def api_status(self):
+        """
+        A blocking API call returning currently known status of the server
+        """
+        self.respond(
+            content_type="application/json",
+            body=json.dumps(protocol.StateResponse(
+                state_id=self.server.lcrs_state
+            ))
+        )
+
+    def respond_job_id(self, job_id):
+        """
+        Sends back a response containing a job id
+        """
+        self.respond(
+            content_type="application/json",
+            body=json.dumps(protocol.JobResponse(job_id=job_id)),
+        )
+
 
 def serve(port=8000, host='0.0.0.0'):
-    global __active
-    server = SimpleServer(('0.0.0.0', port), LCRSRequestHandler)
+    global __server_instances
+    server = SimpleServer((host, port), LCRSRequestHandler)
+    __server_instances[port] = server
     logger.info(
         "Serving HTTP traffic on http://{host}:{port}".format(
             host=host, port=port
         )
     )
     try:
-        while __active:
-            sys.stdout.flush()
-            server.handle_request()
+        server.serve_forever()
 
     except KeyboardInterrupt:
         logger.info(
@@ -108,9 +126,9 @@ def serve(port=8000, host='0.0.0.0'):
         )
 
 
-def stop():
-    global __active
+def stop(port):
+    global __server_instances
     logger.info(
         "Asking HTTP server to stop"
     )
-    __active = False
+    __server_instances[port].shutdown()

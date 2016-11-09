@@ -11,11 +11,12 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 import pkg_resources
 
-
 logger = logging.getLogger(__name__)
 
 
 class SimpleServer(HTTPServer):
+
+    lcrs_state = "IDLE"
 
     def handle_error(self, request, client_address):
         HTTPServer.handle_error(self, request, client_address)
@@ -42,6 +43,9 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
         content_length=0,
         status=HTTPStatus.OK
     ):
+        if not content_length:
+            content_length = len(body)
+        logger.debug("Sending response: {}".format(body[:200]))
         self.send_response(status)
         self.send_header(
             "Content-Type",
@@ -49,9 +53,9 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
         )
         self.send_header("Content-Length", str(content_length))
         self.end_headers()
-
         self.wfile.write(body.encode("utf-8"))
         self.wfile.flush()
+        self.connection.close()
 
     def log_message(self, fmt, *args):
         logger.debug("{addr} {dtm} - {msg}".format(
@@ -169,12 +173,3 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
         if trailing_slash:
             path += '/'
         return path
-
-    def respond_job_id(self, job_id):
-        """
-        Sends back a response containing a job id
-        """
-        self.respond(
-            content_type="application/json",
-            body=json.dumps({'job_id': job_id}),
-        )

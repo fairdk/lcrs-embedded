@@ -21,7 +21,7 @@ def lcrs_subprocess(command_args=""):
 
 
 def test_cli():
-    with lcrs_subprocess("") as p:
+    with lcrs_subprocess(" --port 42862") as p:
         # Give the new process enough time to start, coverage is also started
         time.sleep(0.5)
         p.send_signal(signal.SIGINT)
