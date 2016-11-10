@@ -10,12 +10,16 @@ requesting attendant client.
 """
 from .utils.models import JSONModel
 
+STATE_IDLE = "IDLE"
+STATE_BUSY = "BUSY"
+STATE_FAIL = "FAIL"
+STATE_DISCONNECTED = "DISCONNECTED"
 
 STATES = set((
-    "IDLE",
-    "FAIL",
-    "BUSY",
-    "DISCONNECTED",
+    STATE_IDLE,
+    STATE_FAIL,
+    STATE_BUSY,
+    STATE_DISCONNECTED,
 ))
 """
 States of the slave application::

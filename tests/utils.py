@@ -42,12 +42,15 @@ def compare_dictionaries(dict1, dict2):
 
     shared_keys = set(dict2.keys()) & set(dict2.keys())
 
-    if not (len(shared_keys) == len(dict1.keys()) and
-            len(shared_keys) == len(dict2.keys())):
+    dict1_keys = list(dict1.keys())
+    dict2_keys = list(dict2.keys())
+
+    if not (len(shared_keys) == len(dict1_keys) and
+            len(shared_keys) == len(dict2_keys)):
         return False
 
     dicts_are_equal = True
-    for key in dict1.keys():
+    for key in dict1_keys:
         if type(dict1[key]) is dict:
             dicts_are_equal = dicts_are_equal and compare_dictionaries(
                 dict1[key], dict2[key])

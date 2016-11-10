@@ -98,6 +98,13 @@ class LCRSRequestHandler(JSONRequestHandler):
             ))
         )
 
+    @threaded_api_request(jobs.ScanJob)
+    def api_scan(self):
+        """
+        A blocking API call returning currently known status of the server
+        """
+        self.server.lcrs_state = protocol.STATE_BUSY
+
     def respond_job_id(self, job_id):
         """
         Sends back a response containing a job id

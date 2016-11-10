@@ -4,6 +4,9 @@ import threading
 
 class Job(threading.Thread):
 
+    #: Progress fraction 0.0-1.0
+    progress = 0.0
+
     def __init__(self, output_queue, exception_queue, job_id, *args, **kwargs):
         # An async queue where we can put new output and it can be read out by
         # the parent thread or whatever

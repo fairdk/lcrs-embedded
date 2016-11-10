@@ -24,3 +24,7 @@ class JSONModel(dict):
     def __delitem__(self, key):
         delattr(self, key)
         super(JSONModel, self).__delitem__(key)
+
+
+def decoder(Klass):
+    return lambda dct: Klass(**dct)

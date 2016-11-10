@@ -3,6 +3,7 @@ import logging
 from threading import ThreadError
 
 import pytest
+from lcrs_embedded.utils.models import decoder
 
 from . import *  # noqa  # This loads the fixtures that are in __init__.py
 from . import utils
@@ -38,3 +39,16 @@ def test_fail_api(runserver):
     logger.info("Testing the API...")
     with pytest.raises(ThreadError):
         utils.request_api_endpoint("/api/v1/fail/")
+
+
+def test_scan_api(runserver):
+    """
+    Calls the failing API endpoint, which should catch an exception in the
+    remote thread.
+    """
+    from lcrs_embedded import protocol
+    logger.info("Testing the API status...")
+    response = utils.request_api_endpoint("/api/v1/scan/")
+    response = response.content.decode("utf-8")
+    job = json.loads(response, object_hook=decoder(protocol.JobResponse))
+    assert job.job_id > 0
