@@ -61,6 +61,7 @@ class ScanResult(Response):
     graphics_controller = ""
     usb_controller = ""
     has_usb = False
+    disk_controllers = []
 
 
 class Processor(JSONModel):
@@ -70,7 +71,25 @@ class Processor(JSONModel):
     cores = None
 
 
+class DiskController(JSONModel):
+
+    #: Name of device, ata1, ata2 etc.
+    dev = ""
+
+    #: False implies it's PATA (IDE)
+    sata = False
+
+    #: Raw output from dmesg
+    raw_info = ""
+
+
 class Harddrive(JSONModel):
+
+    #: Device node, e.g. /dev/sda
+    dev = ""
+
+    #: False implies it's PATA (IDE)
+    sata = False
 
     #: Manufacturer serial number of the hard drive, if available
     serial = None

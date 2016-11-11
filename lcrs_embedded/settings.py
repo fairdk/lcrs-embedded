@@ -8,6 +8,10 @@ __logger = logging.getLogger(__name__)
 
 DEBUG = True
 
+#: Set when tests are being run. Automatically mocks certain aspects of the
+#: system like hard-drive overwriting
+TESTING = False
+
 RUNTIME_DATA = "/tmp/lcrs_embedded"
 
 os.makedirs(RUNTIME_DATA, 0o755, True)

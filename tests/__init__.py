@@ -6,6 +6,7 @@ import time
 from . import utils
 
 from lcrs_embedded import server, settings
+settings.TESTING = True
 settings.setup_logging(debug=True, test=True)
 
 __all__ = ['runserver']

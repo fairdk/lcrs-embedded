@@ -3,6 +3,8 @@ import shlex
 import subprocess
 
 from functools import wraps
+
+from .. import settings
 from .job import Job
 
 
@@ -46,7 +48,7 @@ def thread_safe_method(lock_attr):
     return outer_wrapper
 
 
-def run_command_with_timeout(command, timeout=1):
+def run_command_with_timeout(command, timeout=1, default_mock=False):
     """
     Runs a command, calling the decorated function with the results of the
     command.
@@ -79,7 +81,7 @@ def run_command_with_timeout(command, timeout=1):
         @wraps(func)
         def wrapper(*args, **kwargs):
 
-            mock = kwargs.pop('mock', False)
+            mock = settings.TESTING and kwargs.pop('mock', default_mock)
 
             if not mock:
                 stdout, stderr, succeeded = run_command()
