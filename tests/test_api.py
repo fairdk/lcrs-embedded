@@ -46,9 +46,9 @@ def test_scan_api(runserver):
     Calls the failing API endpoint, which should catch an exception in the
     remote thread.
     """
-    from lcrs_embedded import protocol
+    from lcrs_embedded import models
     logger.info("Testing the API status...")
     response = utils.request_api_endpoint("/api/v1/scan/")
     response = response.content.decode("utf-8")
-    job = json.loads(response, object_hook=decoder(protocol.JobResponse))
+    job = json.loads(response, object_hook=decoder(models.JobResponse))
     assert job.job_id > 0

@@ -25,6 +25,13 @@ class JSONModel(dict):
         delattr(self, key)
         super(JSONModel, self).__delitem__(key)
 
+    def __getitem__(self, key):
+        if not hasattr(self, key):
+            raise KeyError("Not a defined model attribute")
+        if hasattr(self, key):
+            return getattr(self, key)
+        return super(JSONModel, self).__getitem__(key)
+
 
 def decoder(Klass):
     return lambda dct: Klass(**dct)

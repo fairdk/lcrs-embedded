@@ -5,13 +5,14 @@ import time
 
 from . import utils
 
+from lcrs_embedded import server, settings
+settings.setup_logging(debug=True, test=True)
+
 __all__ = ['runserver']
 
 
 @pytest.fixture
 def runserver(scope="module"):
-    from lcrs_embedded import server, settings
-    settings.setup_logging(debug=True, test=True)
     utils.SERVER_TEST_PORT += 1
     port = utils.SERVER_TEST_PORT
     serve_thread = threading.Thread(
