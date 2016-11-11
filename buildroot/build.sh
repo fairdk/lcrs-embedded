@@ -26,12 +26,31 @@ cd linked-buildroot
 if ! [ -f "$BUILDROOT_DIR/.config" ]
 then
 	echo "Copying buildroot .config"
-	cp "$DIR/.config-dist" "$BUILDROOT_DIR/.config"
+	cp "$DIR/buildroot-config-dist" "$BUILDROOT_DIR/.config"
 fi
 
-if ! diff -q "$DIR/.config-dist" "$BUILDROOT_DIR/.config"
+if ! diff -q "$DIR/buildroot-config-dist" "$BUILDROOT_DIR/.config"
 then
-        echo "Warning! Configuration has changed, remember to copy changes to Git!"
+        echo "Warning! Configuration has changed, remember to copy changes to Git (buildroot-config-dist)! The current .config will be used, nothing will be overwritten."
+	echo -n "Continue? [y]"
+        read yn
+	if [[ "$yn" == "y" || "$yn" == "" ]]
+	then
+		echo "Continuing..."
+	else
+		exit 1
+	fi
+fi
+
+if ! [ -f "$BUILDROOT_DIR/linux-config" ]
+then
+	echo "Copying linux config, linux-config"
+	cp "$DIR/linux-config-dist" "$BUILDROOT_DIR/linux-config"
+fi
+
+if ! diff -q "$DIR/linux-config-dist" "$BUILDROOT_DIR/linux-config"
+then
+        echo "Warning! Linux kernel configuration has changed, remember to copy changes to Git (linux-config-dist)! The current linux-config will be used, nothing will be overwritten."
 	echo -n "Continue? [y]"
         read yn
 	if [[ "$yn" == "y" || "$yn" == "" ]]
