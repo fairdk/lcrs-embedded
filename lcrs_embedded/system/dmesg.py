@@ -45,7 +45,10 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
                                          'sata': "SATA" in info}
             logger.info("Found ATA controller %s" % ata_name)
 
-    for k, v in ata_controllers.items():
+    # Sort the keys because otherwise the output list will be inconsistent
+    # and hard to test
+    for k in sorted(ata_controllers.keys()):
+        v = ata_controllers[k]
         scan_result.disk_controllers.append(
             models.DiskController(dev=k, sata=v['sata'], raw_info=v['info'])
         )
