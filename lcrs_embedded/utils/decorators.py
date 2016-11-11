@@ -84,7 +84,7 @@ def run_command_with_timeout(command, timeout=1):
             if not mock:
                 stdout, stderr, succeeded = run_command()
             else:
-                stdout, stderr, succeeded = func.mock_output, "", True
+                stdout, stderr, succeeded = wrapper.mock_output, "", True
 
             return func(
                 *args,
