@@ -52,28 +52,39 @@ def run_command_with_timeout(command, timeout=1):
     command.
     """
 
+    def run_command():
+
+        try:
+            p = subprocess.run(
+                *shlex.split(command),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout,
+                check=True,
+            )
+            stdout = p.stdout.decode('utf-8')
+            stderr = p.stderr.decode('utf-8')
+            succeeded = p.returncode == 0
+
+        except subprocess.TimeoutExpired:
+            stdout = ""
+            stderr = ""
+            succeeded = False
+            logger.error("Command timed out: {}".format(command))
+
+        return stdout, stderr, succeeded
+
     def outer_rapper(func):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
 
-            try:
-                p = subprocess.run(
-                    *shlex.split(command),
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    timeout=timeout,
-                    check=True,
-                )
-                stdout = p.stdout.decode('utf-8')
-                stderr = p.stderr.decode('utf-8')
-                succeeded = p.returncode == 0
+            mock = kwargs.pop('mock', False)
 
-            except subprocess.TimeoutExpired:
-                stdout = ""
-                stderr = ""
-                succeeded = False
-                logger.error("Command timed out: {}".format(command))
+            if not mock:
+                stdout, stderr, succeeded = run_command()
+            else:
+                stdout, stderr, succeeded = func.mock_output, "", True
 
             return func(
                 *args,

@@ -75,7 +75,7 @@ def lspci_analysis(scan_results, stdout, stderr, succeeded):
         scan_results.usb_controller = m.group(1)
         scan_results.has_usb = True
 
-lspci_analysis.test_input = """
+lspci_analysis.mock_output = """
 00:00.0 Host bridge: Intel Corporation 2nd Generation Core Processor Family DRAM Controller (rev 09)
 00:02.0 VGA compatible controller: Intel Corporation 2nd Generation Core Processor Family Integrated Graphics Controller (rev 09)
 00:16.0 Communication controller: Intel Corporation 6 Series/C200 Series Chipset Family MEI Controller #1 (rev 04)

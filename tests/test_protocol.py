@@ -1,5 +1,7 @@
 import json
+
 import pytest
+from lcrs_embedded.utils.models import decoder
 from tests.utils import compare_dictionaries
 
 
@@ -20,5 +22,9 @@ def test_serialization():
     ]
 
     json_s = str(json.dumps(scan_response))
+    after_serialization = json.loads(
+        json_s,
+        object_hook=decoder
+    )
 
-    assert compare_dictionaries(scan_response, json.loads(json_s))
+    assert compare_dictionaries(scan_response, after_serialization)

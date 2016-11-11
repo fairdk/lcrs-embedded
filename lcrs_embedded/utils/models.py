@@ -1,3 +1,10 @@
+"""
+Instances inherited from JSONModel *must* live in lcrs_embedded.models since
+that automatically adds them to the registry and will instantiate them as the
+expected type upon deserialization.
+"""
+
+
 class JSONModel(dict):
     """
     Used to map classes to models. It's nice because we can then use
@@ -14,10 +21,14 @@ class JSONModel(dict):
         for x in self.__dir__():
             if not x.startswith("__") and x not in parent_dict:
                 self[x] = getattr(self, x)
+        dict.__setitem__(self, "__type__", self.__class__.__name__)
+        dict.__setattr__(self, "__type__", self.__class__.__name__)
 
     def __setitem__(self, key, value):
         if not hasattr(self, key):
-            raise KeyError("Not a defined model attribute")
+            raise KeyError("Not a defined model attribute of {}".format(
+                type(self))
+            )
         setattr(self, key, value)
         super(JSONModel, self).__setitem__(key, value)
 
@@ -25,13 +36,15 @@ class JSONModel(dict):
         delattr(self, key)
         super(JSONModel, self).__delitem__(key)
 
-    def __getitem__(self, key):
-        if not hasattr(self, key):
-            raise KeyError("Not a defined model attribute")
-        if hasattr(self, key):
-            return getattr(self, key)
-        return super(JSONModel, self).__getitem__(key)
+    def __setattr__(self, key, value):
+        dict.__setattr__(self, key, value)
+        super(JSONModel, self).__setitem__(key, value)
 
 
-def decoder(Klass):
-    return lambda dct: Klass(**dct)
+def decoder(dct):
+    from .. import models
+    Klass = dct.pop('__type__', "")
+    if Klass:
+        return getattr(models, Klass, dict)(**dct)
+    else:
+        return dict(**dct)
