@@ -3,11 +3,8 @@ import logging
 import threading
 from queue import Queue
 
-from lcrs_embedded import models
-from lcrs_embedded.utils.decorators import (thread_safe_method,
-                                            threaded_api_request)
-
-from . import __version__, jobs, settings
+from . import __version__, jobs, models, protocol, settings
+from .utils.decorators import thread_safe_method, threaded_api_request
 from .utils.http import JSONRequestHandler, SimpleServer
 
 logger = logging.getLogger(__name__)
@@ -104,7 +101,7 @@ class LCRSRequestHandler(JSONRequestHandler):
         """
         A blocking API call returning currently known status of the server
         """
-        self.server.lcrs_state = models.STATE_BUSY
+        self.server.lcrs_state = protocol.STATE_BUSY
 
     def respond_job_id(self, job_id):
         """
