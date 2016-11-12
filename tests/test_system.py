@@ -3,8 +3,6 @@ Test functions that invoke system commands
 """
 import logging
 
-from . import utils
-
 logger = logging.getLogger(__name__)
 
 
@@ -12,13 +10,14 @@ def test_lspci():
     """
     This test is only mocked on CI
     """
+    from lcrs_embedded import settings
     from lcrs_embedded.system.lspci import lspci_analysis
     from lcrs_embedded.models import ScanResult
 
     scan_result = ScanResult()
-    lspci_analysis(scan_result, mock=utils.IS_CI)
+    lspci_analysis(scan_result, mock=settings.IS_CI)
 
-    if utils.IS_CI:
+    if settings.IS_CI:
         for k, v in lspci_analysis.expected_results.items():  # @UndefinedVariable  # noqa
             assert v == scan_result[k]
     else:

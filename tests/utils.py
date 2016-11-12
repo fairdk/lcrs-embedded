@@ -1,5 +1,4 @@
 import logging
-import os
 import requests
 
 from requests.exceptions import ConnectionError
@@ -11,8 +10,6 @@ logger = logging.getLogger(__name__)
 
 SERVER_HOST = '127.0.0.1'
 SERVER_TEST_PORT = 23452
-
-IS_CI = bool(os.environ.get('CI', False))
 
 
 class WrongStatusCode(AssertionError):

@@ -81,7 +81,12 @@ def run_command_with_timeout(command, timeout=1, mock_in_test=False):
         @wraps(func)
         def wrapper(*args, **kwargs):
 
-            mock = settings.TESTING and kwargs.pop('mock', mock_in_test)
+            # Ensure the default is always to mock when running in CI mode
+            mock = (
+                settings.TESTING and
+                hasattr(wrapper, 'mock_output') and
+                kwargs.pop('mock', mock_in_test or settings.IS_CI)
+            )
 
             if not mock:
                 stdout, stderr, succeeded = run_command()

@@ -12,6 +12,11 @@ DEBUG = True
 #: system like hard-drive overwriting
 TESTING = False
 
+#: Detect if we're running on a CI - some tests will invoke real system tools
+#: but never on a CI.
+IS_CI = bool(os.environ.get('CI', False))
+
+
 RUNTIME_DATA = "/tmp/lcrs_embedded"
 
 os.makedirs(RUNTIME_DATA, 0o755, True)
