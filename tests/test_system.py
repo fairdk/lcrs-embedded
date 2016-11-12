@@ -28,3 +28,13 @@ def test_dmesg():
     logger.debug(scan_result['disk_controllers'])
     for k, v in dmesg_analysis.expected_results.items():  # @UndefinedVariable
         assert v == scan_result[k]
+
+
+def test_dmidecode_system():
+    from lcrs_embedded.system.dmidecode import dmidecode_system
+    from lcrs_embedded.models import ScanResult
+
+    scan_result = ScanResult()
+    dmidecode_system(scan_result)
+    for k, v in dmidecode_system.expected_results.items():  # @UndefinedVariable  # noqa
+        assert v == scan_result[k]

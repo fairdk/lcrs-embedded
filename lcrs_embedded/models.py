@@ -57,11 +57,25 @@ class ScanResult(Response):
     wifi = ""
     is_laptop = False
     total_memory = None
-    manufacturer = None
     graphics_controller = ""
     usb_controller = ""
     has_usb = False
     disk_controllers = []
+    #: The perceived manufacturer of the whole computer system, e.g. Dell
+    system_manufacturer = None
+    #: Manufacturer system UUID (NOT the serial)
+    system_uuid = None
+    #: Manufacturer Product Name/ID (like P/N)
+    system_product_id = None
+    #: Manufacturer system version (normally the nice name like "Thinkpad T60")
+    system_version = None
+    #: Manufacturer system UUID (NOT the serial)
+    system_uuid = None
+    #: Manufacturer system serial number, other alternatives exist for ID'ing
+    #: the chassis
+    system_serial_number = None
+    #: Manufacturer system family (normally the nice name like "Thinkpad T60")
+    system_family = None
 
 
 class Processor(JSONModel):

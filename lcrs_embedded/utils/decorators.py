@@ -48,7 +48,7 @@ def thread_safe_method(lock_attr):
     return outer_wrapper
 
 
-def run_command_with_timeout(command, timeout=1, default_mock=False):
+def run_command_with_timeout(command, timeout=1, mock_in_test=False):
     """
     Runs a command, calling the decorated function with the results of the
     command.
@@ -58,7 +58,7 @@ def run_command_with_timeout(command, timeout=1, default_mock=False):
 
         try:
             p = subprocess.run(
-                *shlex.split(command),
+                shlex.split(command),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 timeout=timeout,
@@ -81,7 +81,7 @@ def run_command_with_timeout(command, timeout=1, default_mock=False):
         @wraps(func)
         def wrapper(*args, **kwargs):
 
-            mock = settings.TESTING and kwargs.pop('mock', default_mock)
+            mock = settings.TESTING and kwargs.pop('mock', mock_in_test)
 
             if not mock:
                 stdout, stderr, succeeded = run_command()

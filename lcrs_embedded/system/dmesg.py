@@ -7,7 +7,7 @@ from ..utils.decorators import run_command_with_timeout
 logger = logging.getLogger(__name__)
 
 
-@run_command_with_timeout("dmesg", default_mock=True)
+@run_command_with_timeout("dmesg", mock_in_test=True)
 def dmesg_analysis(scan_result, stdout, stderr, succeeded):
     """
     default_mock = True because dmesg output is different depending on Kernel.
