@@ -15,6 +15,10 @@ https://lcrs.fairdanmark.dk
 .. image:: https://img.shields.io/pypi/v/lcrs-embedded.svg
         :target: https://pypi.python.org/pypi/lcrs-embedded
 
+.. image:: http://codecov.io/github/fairdk/lcrs-embedded/coverage.svg?branch=master
+        :target: http://codecov.io/github/fairdk/lcrs-embedded?branch=master
+        :alt: Code coverage
+
 .. image:: https://img.shields.io/travis/fairdk/lcrs-embedded.svg
         :target: https://travis-ci.org/fairdk/lcrs-embedded
 
@@ -23,8 +27,8 @@ https://lcrs.fairdanmark.dk
         :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/fairdk/lcrs-embedded/shield.svg
-     :target: https://pyup.io/repos/github/fairdk/lcrs-embedded/
-     :alt: Updates
+        :target: https://pyup.io/repos/github/fairdk/lcrs-embedded/
+        :alt: Updates
 
 
 Software for computer refurbishment workshops: Wipe disks, test hardware, store results in database.
