@@ -77,6 +77,11 @@ class ScanResult(Response):
     #: Manufacturer system family (normally the nice name like "Thinkpad T60")
     system_family = None
 
+    def __setattr__(self, key, value):
+        if key == 'disk_controllers' and bool(value):
+            raise Exception(value)
+        Response.__setattr__(self, key, value)
+
 
 class Processor(JSONModel):
 

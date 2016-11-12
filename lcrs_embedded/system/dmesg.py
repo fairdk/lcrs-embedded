@@ -16,7 +16,7 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
 
     if not succeeded:
         return
-
+    logger.info("called")
     """
     Find hard drives...
     """
@@ -28,6 +28,7 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
         if m:
             dev_name = "/dev/{}".format(m.group(1))
             harddrives.append(models.Harddrive(dev=dev_name))
+            logger.info("Found disk drive {}".format(dev_name))
 
     scan_result.harddrives = harddrives
 
@@ -38,16 +39,18 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
         if m:
             ata_name = m.group(1)
             # Info is appended to...
-            info = ata_controllers.get('ata_name', {'info': ''})['info']
+            info = ata_controllers.get(ata_name, {'info': ''})['info']
             info = info + "\n" + m.group(2)
             ata_controllers[ata_name] = {'info': info,
                                          'pata': "PATA" in info,
                                          'sata': "SATA" in info}
-            logger.info("Found ATA controller %s" % ata_name)
+            logger.info("Found ATA controller {}".format(ata_name))
 
     # Sort the keys because otherwise the output list will be inconsistent
     # and hard to test
+    logger.debug(scan_result.disk_controllers)
     for k in sorted(ata_controllers.keys()):
+        logger.info("Adding: {}".format(k))
         v = ata_controllers[k]
         scan_result.disk_controllers.append(
             models.DiskController(dev=k, sata=v['sata'], raw_info=v['info'])

@@ -38,6 +38,21 @@ def request_api_endpoint(urlpath):
             raise AssertionError("Server isn't alive")
 
 
+def request_get(urlpath):
+    with assert_no_thread_exceptions():
+        url = get_url(urlpath)
+        logger.debug("Testing GET for url: {}".format(url))
+        try:
+            response = requests.get(url)
+            if not response.status_code == 200:
+                raise WrongStatusCode("Status code was {}".format(
+                    response.status_code
+                ))
+            return response
+        except ConnectionError:
+            raise AssertionError("Server isn't alive")
+
+
 def compare_dictionaries(dict1, dict2):
 
     if not isinstance(dict1, dict) or not isinstance(dict2, dict):

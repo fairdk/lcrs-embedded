@@ -33,6 +33,9 @@ class RequireDebugTrue(logging.Filter):
         return DEBUG
 
 
+DEBUG_LOG_FILENAME = 'debug.log'
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -79,7 +82,7 @@ LOGGING = {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
-            'filename': os.path.join(RUNTIME_DATA, 'debug.log'),
+            'filename': os.path.join(RUNTIME_DATA, DEBUG_LOG_FILENAME),
             'formatter': 'simple_date',
         },
         'file': {

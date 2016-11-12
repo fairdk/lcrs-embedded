@@ -20,7 +20,13 @@ class JSONModel(dict):
         parent_dict = dir(dict)
         for x in self.__dir__():
             if not x.startswith("__") and x not in parent_dict:
-                self[x] = getattr(self, x)
+                # Make sure that fresh instances are created of mutable objects
+                static_attr = getattr(self, x)
+                if hasattr(static_attr, 'copy'):
+                    new_instance = static_attr.copy()
+                else:
+                    new_instance = static_attr
+                setattr(self, x, new_instance)
         dict.__setitem__(self, "__type__", self.__class__.__name__)
         dict.__setattr__(self, "__type__", self.__class__.__name__)
 

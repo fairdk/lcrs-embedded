@@ -10,6 +10,7 @@ from http import HTTPStatus
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 import pkg_resources
+from lcrs_embedded import settings
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +84,7 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
         elif self.path.startswith(""):
             if self.path.startswith(debug_url_path):
                 self.path = self.path[len(debug_url_path):]
+                self.path += settings.DEBUG_LOG_FILENAME
             if self.path.startswith("//"):
                 self.path = self.path[1:]
             f = self.send_head()
@@ -173,3 +175,9 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
         if trailing_slash:
             path += '/'
         return path
+
+    def guess_type(self, path):
+        __, ext = posixpath.splitext(path)
+        if ext.endswith("log"):
+            return "text"
+        return super(JSONRequestHandler, self).guess_type(path)
