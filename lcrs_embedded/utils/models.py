@@ -43,6 +43,10 @@ class JSONModel(dict):
         super(JSONModel, self).__delitem__(key)
 
     def __setattr__(self, key, value):
+        if not hasattr(self, key):
+            raise KeyError("Not a defined model attribute of {}".format(
+                type(self))
+            )
         dict.__setattr__(self, key, value)
         super(JSONModel, self).__setitem__(key, value)
 

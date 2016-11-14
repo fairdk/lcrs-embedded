@@ -7,7 +7,6 @@ class CommandNotAvailable(RuntimeError):
 
 # Shell commands for the first iteration and functions for analyzing data
 SCAN_ITERATION_1 = {
-    "dmidecode -s baseboard-serial-number": "analyze_dmidecode_bios_sn",
     "dmidecode --string chassis-type": "analyze_dmidecode_chassis_type",
     "dmidecode -t memory": "analyze_dmidecode_memory",
     "cat /proc/meminfo": "analyze_meminfo_data",

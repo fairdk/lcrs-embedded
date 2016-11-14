@@ -41,16 +41,27 @@ def test_dmesg():
         assert v == scan_result[k]
 
 
-def test_dmidecode_system():
+def test_dmidecode():
     """
     This test is always mocked
     """
     from lcrs_embedded.system.dmidecode import dmidecode_system
+    from lcrs_embedded.system.dmidecode import dmidecode_baseboard
+    from lcrs_embedded.system.dmidecode import dmidecode_chassis
     from lcrs_embedded.models import ScanResult
 
     scan_result = ScanResult()
+
     dmidecode_system(scan_result)
     for k, v in dmidecode_system.expected_results.items():  # @UndefinedVariable  # noqa
+        assert v == scan_result[k]
+
+    dmidecode_baseboard(scan_result)
+    for k, v in dmidecode_baseboard.expected_results.items():  # @UndefinedVariable  # noqa
+        assert v == scan_result[k]
+
+    dmidecode_chassis(scan_result)
+    for k, v in dmidecode_chassis.expected_results.items():  # @UndefinedVariable  # noqa
         assert v == scan_result[k]
 
 

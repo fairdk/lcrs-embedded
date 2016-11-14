@@ -76,6 +76,18 @@ class ScanResult(Response):
     system_serial_number = None
     #: Manufacturer system family (normally the nice name like "Thinkpad T60")
     system_family = None
+    #: Board manufacturer, often actually the brand / system_manufacturer
+    baseboard_manufacturer = None
+    #: Board system serial number, other alternatives exist, but this is
+    #: quite likely always the serial number of the motherboard, and not
+    #: something written on the chassis.
+    baseboard_serial_number = None
+    #: Manufacturer name of Chassis as written in DMI registry
+    chassis_manufacturer = None
+    #: Chassis type according to DMI registry
+    chassis_type = None
+    #: Chassis serial number according to DMI registry
+    chassis_serial_number = None
 
     def __setattr__(self, key, value):
         if key == 'disk_controllers' and bool(value):
