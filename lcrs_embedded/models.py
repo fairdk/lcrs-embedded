@@ -53,13 +53,25 @@ class ScanResult(Response):
     harddrives = []
     screen = {}
     removable_drives = []
-    ethernet = ""
-    wifi = ""
+    #: String information about ethernet NIC
+    ethernet = None
+    #: String information about WIFI interface
+    wifi = None
     is_laptop = False
-    total_memory = None
-    graphics_controller = ""
-    usb_controller = ""
+    #: Total amount of memory installed
+    memory_total = None
+    #: Memory devices = RAM blocks
+    memory_devices_count = None
+    #: Details of each memory device, may not be present or may defer from the
+    #: count depending on how well dmi decode analysis performs
+    memory_devices = []
+    #: String information about graphics controller
+    graphics_controller = None
+    #: String information about USB controller
+    usb_controller = None
+    #: Boolean USB present
     has_usb = False
+    #: List of disk controllers
     disk_controllers = []
     #: The perceived manufacturer of the whole computer system, e.g. Dell
     system_manufacturer = None
@@ -158,3 +170,23 @@ class Battery(JSONModel):
     #: Technology, for instance Li-ion
     #: Read about ``/sys/class/power_supply/BAT0``
     technologi = None
+
+
+class MemoryDevice(JSONModel):
+
+    #: Capacity in MB
+    capacity_mb = None
+    #: Form factor, e.g. SODIMM
+    form_factor = None
+    #: Type, e.g. DDR3
+    type_technology = None
+    #: Speed, 1333 = 1333 MHz
+    speed_mhz = None
+    #: Locator, e.g. ChannelB-DIMM0
+    locator = None
+    #: Locator bank, e.g. BANK 2
+    locator_bank = None
+    #: Data width, e.g. 64 (=64 bits)
+    data_bits = None
+    #: Manufacturer, e.g. Kingston
+    manufacturer = None

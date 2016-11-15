@@ -16,7 +16,7 @@ makes the presented information possibly unreliable.
 import logging
 import re
 
-# from .. import models
+from .. import models
 from ..utils.decorators import run_command_with_timeout
 
 logger = logging.getLogger(__name__)
@@ -178,4 +178,105 @@ dmidecode_chassis.expected_results = {
     'chassis_manufacturer': "LENOVO",
     'chassis_type': "Notebook",
     'chassis_serial_number': "X123YZ",
+}
+
+
+@run_command_with_timeout("dmidecode -t memory", mock_in_test=True)
+def dmidecode_memory(scan_result, stdout, stderr, succeeded):
+    """
+    default_mock = True because dmidecode needs root privileges
+    """
+
+    if not succeeded:
+        return
+
+    # Key: DMI table column name
+    # Value: ScanResult attribute
+    row_map = {
+        'Manufacturer': 'chassis_manufacturer',
+        'Type': 'chassis_type',
+        'Serial Number': 'chassis_serial_number',
+    }
+
+    fetch_rows(scan_result, stdout, row_map)
+
+dmidecode_memory.mock_output = """
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.6 present.
+
+Handle 0x0005, DMI type 16, 15 bytes
+Physical Memory Array
+    Location: System Board Or Motherboard
+    Use: System Memory
+    Error Correction Type: None
+    Maximum Capacity: 16 GB
+    Error Information Handle: Not Provided
+    Number Of Devices: 2
+
+Handle 0x0006, DMI type 17, 28 bytes
+Memory Device
+    Array Handle: 0x0005
+    Error Information Handle: Not Provided
+    Total Width: 64 bits
+    Data Width: 64 bits
+    Size: 4096 MB
+    Form Factor: SODIMM
+    Set: None
+    Locator: ChannelA-DIMM0
+    Bank Locator: BANK 0
+    Type: DDR3
+    Type Detail: Synchronous
+    Speed: 1333 MHz
+    Manufacturer: Samsung
+    Serial Number: 1234567
+    Asset Tag: 12345678910
+    Part Number: XYSADKLJADSL-132
+    Rank: Unknown
+
+Handle 0x0007, DMI type 17, 28 bytes
+Memory Device
+    Array Handle: 0x0005
+    Error Information Handle: Not Provided
+    Total Width: 64 bits
+    Data Width: 64 bits
+    Size: 4096 MB
+    Form Factor: SODIMM
+    Set: None
+    Locator: ChannelB-DIMM0
+    Bank Locator: BANK 2
+    Type: DDR3
+    Type Detail: Synchronous
+    Speed: 1333 MHz
+    Manufacturer: Samsung
+    Serial Number: 1234567
+    Asset Tag: 12345678910
+    Part Number: XYSADKLJADSL-132
+    Rank: Unknown
+"""
+dmidecode_memory.expected_results = {
+    'memory_total': 8192,
+    'memory_devices_count': 2,
+    'memory_devices': [
+        models.MemoryDevice(
+            capacity_mb=4096,
+            form_factor="SODIMM",
+            type_technology="DDR3",
+            speed_mhz=1333,
+            locator="ChannelA-DIMM0",
+            locator_bank="BANK 0",
+            data_bits=64,
+            manufacturer="Samsung",
+        ),
+        models.MemoryDevice(
+            capacity_mb=4096,
+            form_factor="SODIMM",
+            type_technology="DDR3",
+            speed_mhz=1333,
+            locator="ChannelB-DIMM0",
+            locator_bank="BANK 2",
+            data_bits=64,
+            manufacturer="Samsung",
+        ),
+    ],
 }
