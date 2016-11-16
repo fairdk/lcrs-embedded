@@ -22,10 +22,13 @@ from ..utils.decorators import run_command_with_timeout
 logger = logging.getLogger(__name__)
 
 
-def fetch_rows(scan_result, stdout, row_map):
+def fetch_rows(scan_result, stdout, row_map, type_map=None):
     """
     Reused routine for fetching stuff from dmidecode -t <type> output
     """
+
+    if not type_map:
+        type_map = {}
 
     for row, attr in row_map.items():
         p = re.compile(r"^\s+{row}:\s*(.+)\s*$".format(row=row), re.I | re.M)
@@ -34,6 +37,19 @@ def fetch_rows(scan_result, stdout, row_map):
             match = m.group(1)
             logger.debug("Found DMI information for {}: {}".format(row, match))
             setattr(scan_result, attr, match)
+
+    for attr, func in type_map.items():
+        if scan_result[attr]:
+            scan_result[attr] = func(scan_result[attr])
+
+
+def clean_int(str_value):
+    numbers = [int(s) for s in str_value.split() if s.isdigit()]
+    if len(numbers) == 0:
+        return None
+    if len(numbers) == 1:
+        return numbers[0]
+    raise TypeError("Several numbers in result")
 
 
 @run_command_with_timeout("dmidecode -t system", mock_in_test=True)
@@ -190,15 +206,35 @@ def dmidecode_memory(scan_result, stdout, stderr, succeeded):
     if not succeeded:
         return
 
-    # Key: DMI table column name
-    # Value: ScanResult attribute
-    row_map = {
-        'Manufacturer': 'chassis_manufacturer',
-        'Type': 'chassis_type',
-        'Serial Number': 'chassis_serial_number',
-    }
+    p = re.compile(r"^Memory\sDevice\n(?:[\s]{4}.+\n)+", re.I | re.M)
 
-    fetch_rows(scan_result, stdout, row_map)
+    for match in re.findall(p, stdout):
+        memory_device = models.MemoryDevice()
+        # Key: DMI table column name
+        # Value: ScanResult attribute
+        row_map = {
+            'Size': 'capacity_mb',
+            'Form Factor': 'form_factor',
+            'Type': 'type_technology',
+            'Speed': 'speed_mhz',
+            'Locator': 'locator',
+            'Bank Locator': 'locator_bank',
+            'Data Width': 'data_bits',
+            'Manufacturer': 'manufacturer',
+        }
+        type_map = {
+            'capacity_mb': clean_int,
+            'speed_mhz': clean_int,
+            'data_bits': clean_int,
+        }
+        fetch_rows(memory_device, match, row_map, type_map=type_map)
+        scan_result.memory_devices.append(memory_device)
+
+    scan_result.memory_total = sum(
+        [d.capacity_mb for d in scan_result.memory_devices]
+    )
+    scan_result.memory_devices_count = len(scan_result.memory_devices)
+
 
 dmidecode_memory.mock_output = """
 # dmidecode 3.0

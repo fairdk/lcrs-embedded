@@ -48,6 +48,7 @@ def test_dmidecode():
     from lcrs_embedded.system.dmidecode import dmidecode_system
     from lcrs_embedded.system.dmidecode import dmidecode_baseboard
     from lcrs_embedded.system.dmidecode import dmidecode_chassis
+    from lcrs_embedded.system.dmidecode import dmidecode_memory
     from lcrs_embedded.models import ScanResult
 
     scan_result = ScanResult()
@@ -62,6 +63,10 @@ def test_dmidecode():
 
     dmidecode_chassis(scan_result)
     for k, v in dmidecode_chassis.expected_results.items():  # @UndefinedVariable  # noqa
+        assert v == scan_result[k]
+
+    dmidecode_memory(scan_result)
+    for k, v in dmidecode_memory.expected_results.items():  # @UndefinedVariable  # noqa
         assert v == scan_result[k]
 
 
