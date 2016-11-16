@@ -10,7 +10,7 @@ from ..utils.decorators import readfile
 logger = logging.getLogger(__name__)
 
 
-@readfile("/proc/meminfo", mock_in_test=False)
+@readfile("/proc/meminfo", mock_in_test=True)
 def meminfo(scan_result, file_contents, readable):
     """
     Reads memory information, but only in case DMI data collection has not
