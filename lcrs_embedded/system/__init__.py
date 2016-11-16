@@ -7,7 +7,6 @@ class CommandNotAvailable(RuntimeError):
 
 # Shell commands for the first iteration and functions for analyzing data
 SCAN_ITERATION_1 = {
-    "dmidecode -t memory": "analyze_dmidecode_memory",
     "cat /proc/meminfo": "analyze_meminfo_data",
     "cat /proc/cpuinfo": "analyze_cpu_data",
     "cat /proc/sys/dev/cdrom/info": "analyze_cdrom_info",

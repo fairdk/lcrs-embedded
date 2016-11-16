@@ -70,6 +70,20 @@ def test_dmidecode():
         assert v == scan_result[k]
 
 
+def test_proc():
+    """
+    This test is always mocked
+    """
+    from lcrs_embedded.system.proc import meminfo
+    from lcrs_embedded.models import ScanResult
+
+    scan_result = ScanResult()
+
+    meminfo(scan_result)
+    for k, v in meminfo.expected_results.items():  # @UndefinedVariable
+        assert v == scan_result[k]
+
+
 def test_command_timeout():
     """
     This test is always mocked

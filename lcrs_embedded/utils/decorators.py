@@ -1,4 +1,5 @@
 import logging
+import os
 import shlex
 import subprocess
 
@@ -98,6 +99,47 @@ def run_command_with_timeout(command, timeout=1, mock_in_test=False):
                 stdout=stdout,
                 stderr=stderr,
                 succeeded=succeeded,
+                **kwargs
+            )
+
+        return wrapper
+
+    return outer_rapper
+
+
+def readfile(file_path, mock_in_test=False):
+    """
+    Runs a command, calling the decorated function with the results of the
+    command.
+    """
+
+    def outer_rapper(func):
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+
+            # Ensure the default is always to mock when running in CI mode
+            mock = (
+                settings.TESTING and
+                hasattr(wrapper, 'mock_output') and
+                kwargs.pop('mock', mock_in_test or settings.IS_CI)
+            )
+
+            readable = True
+            file_contents = ""
+
+            if not mock:
+                if os.access(file_path, os.R_OK):
+                    file_contents = open(file_path).read()
+                else:
+                    readable = False
+            else:
+                file_contents = wrapper.mock_output
+
+            return func(
+                *args,
+                file_contents,
+                readable=readable,
                 **kwargs
             )
 
