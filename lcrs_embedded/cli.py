@@ -31,7 +31,3 @@ def main(*args):
 
     from .server import serve
     serve(port)
-
-
-if __name__ == '__main__':
-    main()

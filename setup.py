@@ -56,7 +56,7 @@ setup(
     tests_require=test_requirements,
     entry_points={
         'console_scripts': [
-            'lcrs_embedded = lcrs_embedded.cli:main'
+            'lcrs-embedded = lcrs_embedded.cli:main'
         ]
     },
 )
