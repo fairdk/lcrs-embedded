@@ -18,6 +18,7 @@ import re
 
 from .. import models
 from ..utils.decorators import run_command_with_timeout
+from ..utils.validation import clean_int
 
 logger = logging.getLogger(__name__)
 
@@ -41,15 +42,6 @@ def fetch_rows(scan_result, stdout, row_map, type_map=None):
     for attr, func in type_map.items():
         if scan_result[attr]:
             scan_result[attr] = func(scan_result[attr])
-
-
-def clean_int(str_value):
-    numbers = [int(s) for s in str_value.split() if s.isdigit()]
-    if len(numbers) == 0:
-        return None
-    if len(numbers) == 1:
-        return numbers[0]
-    raise TypeError("Several numbers in result")
 
 
 @run_command_with_timeout("dmidecode -t system", mock_in_test=True)
@@ -315,4 +307,105 @@ dmidecode_memory.expected_results = {
             manufacturer="Samsung",
         ),
     ],
+}
+
+
+@run_command_with_timeout("dmidecode -t processor", mock_in_test=True)
+def dmidecode_processor(scan_result, stdout, stderr, succeeded):
+    """
+    default_mock = True because dmidecode needs root privileges
+    """
+
+    if not succeeded:
+        return
+
+    p = re.compile(r"^Processor\sInformation\n(?:[\s]{4}.+\n)+", re.I | re.M)
+
+    for match in re.findall(p, stdout):
+
+        # In case it's not a CPU (but for instance a GPU)
+        if "Type: Central Processor" not in match:
+            continue
+
+        # Key: DMI table column name
+        # Value: ScanResult attribute
+        row_map = {
+            'Manufacturer': 'processor_manufacturer',
+            'Family': 'processor_family',
+            'Core Count': 'processor_cores',
+            'Max Speed': 'processor_mhz',
+        }
+        type_map = {
+            'processor_cores': clean_int,
+            'processor_mhz': clean_int,
+        }
+
+        fetch_rows(scan_result, match, row_map, type_map=type_map)
+
+dmidecode_processor.mock_output = """
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.6 present.
+
+Handle 0x0001, DMI type 4, 42 bytes
+Processor Information
+    Socket Designation: CPU
+    Type: Central Processor
+    Family: Core i7
+    Manufacturer: Intel(R) Corporation
+    ID: A7 06 02 00 FF FB EB BF
+    Signature: Type 0, Family 6, Model 42, Stepping 7
+    Flags:
+        FPU (Floating-point unit on-chip)
+        VME (Virtual mode extension)
+        DE (Debugging extension)
+        PSE (Page size extension)
+        TSC (Time stamp counter)
+        MSR (Model specific registers)
+        PAE (Physical address extension)
+        MCE (Machine check exception)
+        CX8 (CMPXCHG8 instruction supported)
+        APIC (On-chip APIC hardware supported)
+        SEP (Fast system call)
+        MTRR (Memory type range registers)
+        PGE (Page global enable)
+        MCA (Machine check architecture)
+        CMOV (Conditional move instruction supported)
+        PAT (Page attribute table)
+        PSE-36 (36-bit page size extension)
+        CLFSH (CLFLUSH instruction supported)
+        DS (Debug store)
+        ACPI (ACPI supported)
+        MMX (MMX technology supported)
+        FXSR (FXSAVE and FXSTOR instructions supported)
+        SSE (Streaming SIMD extensions)
+        SSE2 (Streaming SIMD extensions 2)
+        SS (Self-snoop)
+        HTT (Multi-threading)
+        TM (Thermal monitor supported)
+        PBE (Pending break enabled)
+    Version: Intel(R) Core(TM) i7-2620M CPU @ 2.70GHz
+    Voltage: 1.2 V
+    External Clock: 100 MHz
+    Max Speed: 2700 MHz
+    Current Speed: 2700 MHz
+    Status: Populated, Enabled
+    Upgrade: ZIF Socket
+    L1 Cache Handle: 0x0002
+    L2 Cache Handle: 0x0003
+    L3 Cache Handle: 0x0004
+    Serial Number: Not Supported by CPU
+    Asset Tag: None
+    Part Number: None
+    Core Count: 2
+    Core Enabled: 2
+    Thread Count: 4
+    Characteristics:
+        64-bit capable
+"""
+dmidecode_processor.expected_results = {
+    'processor_manufacturer': 'Intel(R) Corporation',
+    'processor_family': 'Core i7',
+    'processor_cores': 2,
+    'processor_mhz': 2700,
 }

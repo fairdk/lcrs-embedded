@@ -49,6 +49,7 @@ def test_dmidecode():
     from lcrs_embedded.system.dmidecode import dmidecode_baseboard
     from lcrs_embedded.system.dmidecode import dmidecode_chassis
     from lcrs_embedded.system.dmidecode import dmidecode_memory
+    from lcrs_embedded.system.dmidecode import dmidecode_processor
     from lcrs_embedded.models import ScanResult
 
     scan_result = ScanResult()
@@ -69,18 +70,22 @@ def test_dmidecode():
     for k, v in dmidecode_memory.expected_results.items():  # @UndefinedVariable  # noqa
         assert v == scan_result[k]
 
+    dmidecode_processor(scan_result)
+    for k, v in dmidecode_processor.expected_results.items():  # @UndefinedVariable  # noqa
+        assert v == scan_result[k]
+
 
 def test_proc():
     """
     This test is always mocked
     """
-    from lcrs_embedded.system.proc import meminfo
+    from lcrs_embedded.system.proc import cpuinfo
     from lcrs_embedded.models import ScanResult
 
     scan_result = ScanResult()
 
-    meminfo(scan_result)
-    for k, v in meminfo.expected_results.items():  # @UndefinedVariable
+    cpuinfo(scan_result)
+    for k, v in cpuinfo.expected_results.items():  # @UndefinedVariable
         assert v == scan_result[k]
 
 

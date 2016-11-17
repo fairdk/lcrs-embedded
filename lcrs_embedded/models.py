@@ -41,14 +41,25 @@ class StateResponse(Response):
 
 class ScanResult(Response):
     """
+    Overall assumption: To simplify our understanding of hardware data found by
+    our probing, we have to accept that data are not guaranteed to be found.
+
+    All fields in our models are therefore nullable.
+
     YAGNI mentality: Try to make stuff that's simple, dump advanced stuff into
     raw output and improve the protocol in the future.
 
     Because the UI and the embedded server are usually bundled, we don't need
-    to worry about things breaking.
+    to worry about things breaking in this interface.
     """
 
-    processor = {}
+    processor_mhz = None
+    processor_family = None
+    processor_manufacturer = None
+    processor_cores = None
+    #: Raw, unparsed model name from cpuinfo
+    processor_model_name = None
+
     battery = {}
     harddrives = []
     screen = {}
@@ -101,17 +112,15 @@ class ScanResult(Response):
     #: Chassis serial number according to DMI registry
     chassis_serial_number = None
 
+    #: lspci raw output
+    lspci = None
+    #: dmesg raw output
+    dmesg = None
+
     def __setattr__(self, key, value):
         if key == 'disk_controllers' and bool(value):
             raise Exception(value)
         Response.__setattr__(self, key, value)
-
-
-class Processor(JSONModel):
-
-    family = None
-    name = None
-    cores = None
 
 
 class DiskController(JSONModel):

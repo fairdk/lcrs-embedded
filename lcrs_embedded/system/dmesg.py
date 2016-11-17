@@ -1,6 +1,8 @@
 import logging
 import re
 
+from lcrs_embedded.utils.validation import clean_int
+
 from .. import models
 from ..utils.decorators import run_command_with_timeout
 
@@ -15,7 +17,11 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
     """
 
     if not succeeded:
+        scan_result.dmesg = "{}\n{}".format(stderr, stdout)
         return
+
+    scan_result.dmesg = stdout
+
     logger.info("called")
     """
     Find hard drives...
@@ -55,6 +61,12 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
         scan_result.disk_controllers.append(
             models.DiskController(dev=k, sata=v['sata'], raw_info=v['info'])
         )
+
+    # Matches "Memory: 485260K/523832K available"
+    p = re.compile(r'Memory:\s\d+K/(\d+)K\savailable\s+\(', re.I)
+    m = p.match(stdout)
+    if m:
+        scan_result.memory_total = clean_int(m.group(0))
 
 
 dmesg_analysis.mock_output = """

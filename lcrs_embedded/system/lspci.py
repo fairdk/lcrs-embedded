@@ -13,7 +13,10 @@ def lspci_analysis(scan_result, stdout, stderr, succeeded):
     """
 
     if not succeeded:
+        scan_result.lspci = "{}\n{}".format(stderr, stdout)
         return
+
+    scan_result.lspci = stdout
 
     p = re.compile(r"VGA compatible controller\:\s*(.+)\s*$", re.M | re.I)
     m = p.search(stdout)
