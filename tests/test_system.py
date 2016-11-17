@@ -77,15 +77,20 @@ def test_dmidecode():
 
 def test_proc():
     """
-    This test is always mocked
+    This test is always mocked, CI cannot read /proc, but a part from that,
+    we don't get consistent output to test in these files anyways.
     """
-    from lcrs_embedded.system.proc import cpuinfo
+    from lcrs_embedded.system.proc import cpuinfo, cdrominfo
     from lcrs_embedded.models import ScanResult
 
     scan_result = ScanResult()
 
     cpuinfo(scan_result)
     for k, v in cpuinfo.expected_results.items():  # @UndefinedVariable
+        assert v == scan_result[k]
+
+    cdrominfo(scan_result)
+    for k, v in cdrominfo.expected_results.items():  # @UndefinedVariable
         assert v == scan_result[k]
 
 

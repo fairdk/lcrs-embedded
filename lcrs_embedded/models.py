@@ -63,7 +63,15 @@ class ScanResult(Response):
     battery = {}
     harddrives = []
     screen = {}
-    removable_drives = []
+
+    #: CD-ROM info from /proc
+    cdrom = False
+    cdrom_dvd = False
+    cdrom_dvdr = False
+    cdrom_cdr = False
+    #: Necessary to eject the drive
+    cdrom_drive_name = None
+
     #: String information about ethernet NIC
     ethernet = None
     #: String information about WIFI interface
