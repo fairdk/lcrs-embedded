@@ -65,6 +65,17 @@ def test_debug_log(runserver):
     assert "INFO" in response
 
 
+def test_debug_index(runserver):
+    """
+    Calls the failing API endpoint, which should catch an exception in the
+    remote thread.
+    """
+    logger.info("Testing index page...")
+    response = utils.request_get("/")
+    response = response.content.decode("utf-8")
+    assert "<title>" in response
+
+
 def test_404(runserver):
     """
     Calls the failing API endpoint, which should catch an exception in the

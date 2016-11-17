@@ -111,12 +111,18 @@ def readfile(file_path, mock_in_test=False):
     """
     Runs a command, calling the decorated function with the results of the
     command.
+
     """
 
     def outer_rapper(func):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """
+            :param: mock_failure: If set, mocks stdout on failed command
+            """
+
+            mock_failure = kwargs.pop('mock_failure', None)
 
             # Ensure the default is always to mock when running in CI mode
             mock = (
@@ -133,6 +139,9 @@ def readfile(file_path, mock_in_test=False):
                     file_contents = open(file_path).read()
                 else:
                     readable = False
+            elif mock_failure:
+                file_contents = mock_failure
+                readable = False
             else:
                 file_contents = wrapper.mock_output
 

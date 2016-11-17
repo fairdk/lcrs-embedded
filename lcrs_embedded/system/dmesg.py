@@ -23,10 +23,8 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
     scan_result.dmesg = stdout
 
     logger.info("called")
-    """
-    Find hard drives...
-    """
-    # This doesn't seem to work
+
+    # Detect hard drives in dmesg
     p = re.compile(r"\[(sd.)\].+(hardware sectors|logical blocks)", re.I)
     harddrives = []
     for line in stdout.split("\n"):
@@ -38,6 +36,7 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
 
     scan_result.harddrives = harddrives
 
+    # Detect drive controllers...
     ata_controllers = {}
     re_ata_controllers = re.compile(r"(ata\d)\:\s*(.+)")
     for line in stdout.split("\n"):
@@ -63,10 +62,10 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
         )
 
     # Matches "Memory: 485260K/523832K available"
-    p = re.compile(r'Memory:\s\d+K/(\d+)K\savailable\s+\(', re.I)
-    m = p.match(stdout)
+    p = re.compile(r'Memory:\s+\d+K/(\d+)K\savailable\s+', re.I | re.M)
+    m = p.search(stdout)
     if m:
-        scan_result.memory_total = clean_int(m.group(0))
+        scan_result.memory_total = clean_int(m.group(1))
 
 
 dmesg_analysis.mock_output = """
@@ -498,6 +497,7 @@ dmesg_analysis.mock_output = """
 
 dmesg_analysis.expected_results = {
     'harddrives': [models.Harddrive(dev="/dev/sda")],
+    'memory_total': 523832,
     'disk_controllers': [
         models.DiskController(
             dev='ata1',

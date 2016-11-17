@@ -93,6 +93,16 @@ def test_proc():
     for k, v in cdrominfo.expected_results.items():  # @UndefinedVariable
         assert v == scan_result[k]
 
+    scan_result = ScanResult()
+
+    cpuinfo(scan_result, mock_failure="alkdjakldakldakl")
+
+    assert scan_result.processor_family is None
+
+    cdrominfo(scan_result, mock_failure="alkdjakldakldakl")
+
+    assert scan_result.cdrom is False
+
 
 def test_command_timeout():
     """
