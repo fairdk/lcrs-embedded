@@ -123,6 +123,28 @@ def test_battery():
     assert not scan_result.battery
 
 
+def test_eject():
+    """
+    This test is always mocked, CI cannot read /proc, but a part from that,
+    we don't get consistent output to test in these files anyways.
+    """
+    from lcrs_embedded.system.cdrom_eject import eject
+    from lcrs_embedded.models import ScanResult
+
+    scan_result = ScanResult(
+        cdrom=True,
+        cdrom_drive_name="test"
+    )
+    eject(scan_result)
+
+    assert scan_result.cdrom_ejected
+
+    scan_result = ScanResult()
+    eject(scan_result, mock_failure="akdasdlkj")
+
+    assert not scan_result.cdrom_ejected
+
+
 def test_command_timeout():
     """
     This test is always mocked

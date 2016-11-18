@@ -72,6 +72,8 @@ class ScanResult(Response):
     cdrom_cdr = False
     #: Necessary to eject the drive
     cdrom_drive_name = None
+    #: Stores state that cdrom was ejected
+    cdrom_ejected = False
 
     #: String information about ethernet NIC
     ethernet = None

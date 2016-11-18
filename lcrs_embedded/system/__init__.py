@@ -4,12 +4,6 @@ System invocation
 class CommandNotAvailable(RuntimeError):
     pass
 
-
-# Shell commands for the first iteration and functions for analyzing data
-SCAN_ITERATION_1 = {
-    "cat /proc/acpi/battery/BAT0/info": "analyze_battery_info",
-}
-
 #dd if=/dev/dvd of=/dev/null count=1 2>/dev/null; if [ $? -eq 0 ]; then echo "disk found"; else echo "no disk"; fi
 
 # Shell commands for second iteration. Each command has a tuple (analyze function, command parser)

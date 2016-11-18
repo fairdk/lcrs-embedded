@@ -49,7 +49,8 @@ def thread_safe_method(lock_attr):
     return outer_wrapper
 
 
-def run_command_with_timeout(command, timeout=1, mock_in_test=False):
+def run_command_with_timeout(
+        command, timeout=1, mock_in_test=False):
     """
     Runs a command, calling the decorated function with the results of the
     command.
@@ -63,7 +64,7 @@ def run_command_with_timeout(command, timeout=1, mock_in_test=False):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 timeout=timeout,
-                check=True,
+                check=False,
             )
             stdout = p.stdout.decode('utf-8')
             stderr = p.stderr.decode('utf-8')
@@ -81,6 +82,9 @@ def run_command_with_timeout(command, timeout=1, mock_in_test=False):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """
+            :param: mock_failure: If supplied, mocks a programme failure
+            """
 
             # Ensure the default is always to mock when running in CI mode
             mock = (
@@ -88,11 +92,15 @@ def run_command_with_timeout(command, timeout=1, mock_in_test=False):
                 hasattr(wrapper, 'mock_output') and
                 kwargs.pop('mock', mock_in_test or settings.IS_CI)
             )
+            mock_failure = kwargs.pop('mock_failure', None)
 
             if not mock:
                 stdout, stderr, succeeded = run_command()
             else:
-                stdout, stderr, succeeded = wrapper.mock_output, "", True
+                if not mock_failure:
+                    stdout, stderr, succeeded = wrapper.mock_output, "", True
+                else:
+                    stdout, stderr, succeeded = "", mock_failure, False
 
             return func(
                 *args,
