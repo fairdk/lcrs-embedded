@@ -17,7 +17,7 @@ import logging
 import re
 
 from .. import models
-from ..utils.decorators import run_command_with_timeout
+from ..utils.decorators import run_command
 from ..utils.validation import clean_int
 
 logger = logging.getLogger(__name__)
@@ -44,14 +44,11 @@ def fetch_rows(scan_result, stdout, row_map, type_map=None):
             scan_result[attr] = func(scan_result[attr])
 
 
-@run_command_with_timeout("dmidecode -t system", mock_in_test=True)
+@run_command("dmidecode -t system", mock_in_test=True, ignore_fail=True)
 def dmidecode_system(scan_result, stdout, stderr, succeeded):
     """
     default_mock = True because dmidecode needs root privileges
     """
-
-    if not succeeded:
-        return
 
     # Key: DMI table column name
     # Value: ScanResult attribute
@@ -91,14 +88,11 @@ dmidecode_system.expected_results = {
 }
 
 
-@run_command_with_timeout("dmidecode -t baseboard", mock_in_test=True)
+@run_command("dmidecode -t baseboard", mock_in_test=True, ignore_fail=True)
 def dmidecode_baseboard(scan_result, stdout, stderr, succeeded):
     """
     default_mock = True because dmidecode needs root privileges
     """
-
-    if not succeeded:
-        return
 
     # Key: DMI table column name
     # Value: ScanResult attribute
@@ -141,14 +135,11 @@ dmidecode_baseboard.expected_results = {
 }
 
 
-@run_command_with_timeout("dmidecode -t chassis", mock_in_test=True)
+@run_command("dmidecode -t chassis", mock_in_test=True, ignore_fail=True)
 def dmidecode_chassis(scan_result, stdout, stderr, succeeded):
     """
     default_mock = True because dmidecode needs root privileges
     """
-
-    if not succeeded:
-        return
 
     # Key: DMI table column name
     # Value: ScanResult attribute
@@ -189,14 +180,11 @@ dmidecode_chassis.expected_results = {
 }
 
 
-@run_command_with_timeout("dmidecode -t memory", mock_in_test=True)
+@run_command("dmidecode -t memory", mock_in_test=True, ignore_fail=True)
 def dmidecode_memory(scan_result, stdout, stderr, succeeded):
     """
     default_mock = True because dmidecode needs root privileges
     """
-
-    if not succeeded:
-        return
 
     p = re.compile(r"^Memory\sDevice\n(?:[\s]{4}.+\n)+", re.I | re.M)
 
@@ -310,14 +298,11 @@ dmidecode_memory.expected_results = {
 }
 
 
-@run_command_with_timeout("dmidecode -t processor", mock_in_test=True)
+@run_command("dmidecode -t processor", mock_in_test=True, ignore_fail=True)
 def dmidecode_processor(scan_result, stdout, stderr, succeeded):
     """
     default_mock = True because dmidecode needs root privileges
     """
-
-    if not succeeded:
-        return
 
     p = re.compile(r"^Processor\sInformation\n(?:[\s]{4}.+\n)+", re.I | re.M)
 
@@ -402,6 +387,18 @@ Processor Information
     Thread Count: 4
     Characteristics:
         64-bit capable
+
+
+some bogus GPU...
+
+Handle 0x0001, DMI type 4, 42 bytes
+Processor Information
+    Socket Designation: GPU
+    Type: Graphics Unit
+    Family: Feline
+    Manufacturer: Cat Brains Inc
+    ID: 12 32 54 65 67
+
 """
 dmidecode_processor.expected_results = {
     'processor_manufacturer': 'Intel(R) Corporation',

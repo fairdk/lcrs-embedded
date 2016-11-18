@@ -131,6 +131,7 @@ def test_eject():
     from lcrs_embedded.system.cdrom_eject import eject
     from lcrs_embedded.models import ScanResult
 
+    #: Assert everything is fine when CD-ROM present and command mocked
     scan_result = ScanResult(
         cdrom=True,
         cdrom_drive_name="test"
@@ -139,8 +140,18 @@ def test_eject():
 
     assert scan_result.cdrom_ejected
 
-    scan_result = ScanResult()
+    #: FAILS: Assert everything is fine when CD-ROM present and command failure
+    scan_result = ScanResult(
+        cdrom=True,
+        cdrom_drive_name="test"
+    )
     eject(scan_result, mock_failure="akdasdlkj")
+
+    assert not scan_result.cdrom_ejected
+
+    #: Assert everything is fine when no CD-ROM present
+    scan_result = ScanResult()
+    eject(scan_result)
 
     assert not scan_result.cdrom_ejected
 
@@ -149,9 +160,9 @@ def test_command_timeout():
     """
     This test is always mocked
     """
-    from lcrs_embedded.utils.decorators import run_command_with_timeout
+    from lcrs_embedded.utils.decorators import run_command
 
-    @run_command_with_timeout("sleep 10", timeout=0.2)
+    @run_command("sleep 10", timeout=0.2)
     def test(stdout, stderr, succeeded):
         assert not succeeded
 

@@ -49,16 +49,18 @@ def thread_safe_method(lock_attr):
     return outer_wrapper
 
 
-def run_command_with_timeout(
-        command, timeout=1, mock_in_test=False):
+def run_command(command, timeout=1, mock_in_test=False, ignore_fail=False):
     """
     Runs a command, calling the decorated function with the results of the
     command.
+
+    :param: ignore_fail: If command fails, skip everything
     """
 
     def run_command():
 
         try:
+            logger.debug("Running command {}".format(command))
             p = subprocess.run(
                 shlex.split(command),
                 stdout=subprocess.PIPE,
@@ -83,14 +85,15 @@ def run_command_with_timeout(
         @wraps(func)
         def wrapper(*args, **kwargs):
             """
-            :param: mock_failure: If supplied, mocks a programme failure
+            :param: mock_failure: If supplied, mocks a program failure
             """
 
             # Ensure the default is always to mock when running in CI mode
+            should_mock = kwargs.pop('mock', mock_in_test or settings.IS_CI)
             mock = (
                 settings.TESTING and
                 hasattr(wrapper, 'mock_output') and
-                kwargs.pop('mock', mock_in_test or settings.IS_CI)
+                should_mock
             )
             mock_failure = kwargs.pop('mock_failure', None)
 
@@ -101,6 +104,10 @@ def run_command_with_timeout(
                     stdout, stderr, succeeded = wrapper.mock_output, "", True
                 else:
                     stdout, stderr, succeeded = "", mock_failure, False
+                    logger.error("called")
+
+            if not succeeded and ignore_fail:
+                return
 
             return func(
                 *args,

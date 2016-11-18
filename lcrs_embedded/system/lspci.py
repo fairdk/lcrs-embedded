@@ -1,12 +1,12 @@
 import logging
 import re
 
-from ..utils.decorators import run_command_with_timeout
+from ..utils.decorators import run_command
 
 logger = logging.getLogger(__name__)
 
 
-@run_command_with_timeout("lspci")
+@run_command("lspci")
 def lspci_analysis(scan_result, stdout, stderr, succeeded):
     """
     :param: scan_result: A ``ScanResult`` instance.
