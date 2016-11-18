@@ -60,7 +60,8 @@ class ScanResult(Response):
     #: Raw, unparsed model name from cpuinfo
     processor_model_name = None
 
-    battery = {}
+    battery = None
+
     harddrives = []
     screen = {}
 
@@ -173,20 +174,24 @@ class Harddrive(JSONModel):
 
 
 class Battery(JSONModel):
+    """
+    read about ``/sys/class/power_supply/BAT0``
+    """
 
     #: 0-100 capacity
     capacity = None
-    #: Kenel's capcity level, read about ``/sys/class/power_supply/BAT0``
+    #: Kenel's capcity level
     capacity_name = None
-    #: Last known watt capacity, read about ``/sys/class/power_supply/BAT0``
+    #: Last known watt capacity
     energy_full = None
-    #: Designed watt capacity, read about ``/sys/class/power_supply/BAT0``
+    #: Designed watt capacity
     energy_full_design = None
-    #: Battery model name, read about ``/sys/class/power_supply/BAT0``
+    #: Current watt capacity
+    energy_now = None
+    #: Battery model name
     model_name = None
     #: Technology, for instance Li-ion
-    #: Read about ``/sys/class/power_supply/BAT0``
-    technologi = None
+    technology = None
 
 
 class MemoryDevice(JSONModel):
