@@ -156,6 +156,28 @@ def test_eject():
     assert not scan_result.cdrom_ejected
 
 
+def test_smartctl():
+    """
+    This test is always mocked, CI cannot read /proc, but a part from that,
+    we don't get consistent output to test in these files anyways.
+    """
+    from lcrs_embedded.system.smartctl import smartinfo, expected_results
+    from lcrs_embedded.models import ScanResult, Harddrive
+
+    #: Assert everything is fine when CD-ROM present and command mocked
+    scan_result = ScanResult(
+        harddrives=[
+            Harddrive(dev="sdz")
+        ]
+    )
+    smartinfo(scan_result)
+
+    assert scan_result.harddrives[0].smart_raw
+
+    for k, v in expected_results.items():
+        assert v == scan_result.harddrives[0][k]
+
+
 def test_command_timeout():
     """
     This test is always mocked

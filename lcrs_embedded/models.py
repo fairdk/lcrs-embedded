@@ -160,8 +160,21 @@ class Harddrive(JSONModel):
     capacity = None
     #: Manufacturer name
     manufacturer = None
+    #: Manufacturer model name
+    model = None
     #: Type of controller ("SSD" / "HDD")
-    controller_type = None
+    is_ssd = False
+    #: String - 1.8/2.5/3.5 inches
+    form_factor = None
+
+    #: S.M.A.R.T. support
+    smart_available = False
+    smart_enabled = False
+    #: Is in smartctl database and data can be understood
+    smart_well_known = False
+
+    #: Self-assessment overall, for instance "passed"
+    overall_health_assessment = None
 
     #: Raw smartmontools output
     smart_raw = None

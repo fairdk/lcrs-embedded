@@ -4,7 +4,12 @@ System invocation
 class CommandNotAvailable(RuntimeError):
     pass
 
-#dd if=/dev/dvd of=/dev/null count=1 2>/dev/null; if [ $? -eq 0 ]; then echo "disk found"; else echo "no disk"; fi
+S.M.A.R.T. data
+hdparm
+ATA secure erase possible?
+ata secure erase
+badblocks
+wipe
 
 # Shell commands for second iteration. Each command has a tuple (analyze function, command parser)
 # for analyzing output and parsing the command (for possible inclusion of data from the first iteration)
