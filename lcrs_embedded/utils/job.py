@@ -31,4 +31,4 @@ class Job(threading.Thread):
         Either set self._target (as with the typical Thread object) or
         implement this method if you inherit from the Job class.
         """
-        return
+        pass

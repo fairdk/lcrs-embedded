@@ -39,8 +39,7 @@ class JSONModel(dict):
         super(JSONModel, self).__setitem__(key, value)
 
     def __delitem__(self, key):
-        delattr(self, key)
-        super(JSONModel, self).__delitem__(key)
+        raise NotImplementedError()
 
     def __setattr__(self, key, value):
         if not hasattr(self, key):

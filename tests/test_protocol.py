@@ -10,6 +10,14 @@ def test_model():
     with pytest.raises(KeyError):
         models.Harddrive(asdjkjklasd=12123)
 
+    with pytest.raises(KeyError):
+        h = models.Harddrive()
+        h.asdkdaskdask = None
+
+    with pytest.raises(NotImplementedError):
+        h = models.Harddrive()
+        del h['sata']
+
 
 def test_serialization():
     from lcrs_embedded import models
