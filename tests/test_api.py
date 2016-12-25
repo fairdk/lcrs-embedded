@@ -3,11 +3,11 @@ import logging
 from threading import ThreadError
 
 import pytest
+from lcrs_embedded import protocol
 from lcrs_embedded.utils.models import decoder
 
 from . import *  # noqa  # This loads the fixtures that are in __init__.py
 from . import utils
-
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,21 @@ def test_status_api(runserver):
     logger.info("Testing the API status...")
     response = utils.request_api_endpoint("/api/v1/status/")
     response = response.content.decode("utf-8")
-    assert json.loads(response)['state_id'] == "IDLE"
+    assert json.loads(response)['state_id'] == protocol.STATE_IDLE
+
+
+def test_status_busy_api(runserver):
+    """
+    Calls the failing API endpoint, which should catch an exception in the
+    remote thread.
+    """
+    logger.info("Testing the API status...")
+    response = utils.request_api_endpoint(
+        "/api/v1/wait/",
+        data={'wait_time': 3},
+    )
+    response = response.content.decode("utf-8")
+    assert json.loads(response)['job_id'] > 0
 
 
 def test_fail_api(runserver):

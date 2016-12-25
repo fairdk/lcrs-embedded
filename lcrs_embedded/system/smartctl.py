@@ -39,7 +39,10 @@ def fetch_rows(scan_result, stdout, row_map, type_map=None):
 
 
 def clean_user_capacity(val):
-    # Cleans a value like "250,053,931,008 bytes [250 GB]"
+    """
+    Cleans a value like "250,053,931,008 bytes [250 GB]" by looking at all
+    numbers preceding "bytes".
+    """
 
     val = val.split("bytes")
 
@@ -101,6 +104,10 @@ def _smartinfo_drive(drive):
 
 
 def smartinfo(scan_result, *args, **kwargs):
+    """
+    Returns information from S.M.A.R.T. information section, which returns at
+    once.
+    """
 
     for drive in scan_result.harddrives:
 

@@ -134,9 +134,11 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
             if not self.rfile._sock.recv(1):
                 break
 
-        data = urllib.parse.parse_qs(data)
-
-        kwargs = json.loads(data['data'][0]) if 'data' in data else {}
+        if data:
+            data = data.decode('utf-8')
+            kwargs = json.loads(data)
+        else:
+            kwargs = {}
 
         flags = (url_match.group('flags') or "")
         flags = flags.split("/")

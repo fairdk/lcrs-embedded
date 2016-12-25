@@ -85,6 +85,14 @@ class LCRSRequestHandler(JSONRequestHandler):
         """
         logger.debug('api_fail called, kwargs: {}'.format(kwargs))
 
+    @threaded_api_request(jobs.WaitJob)
+    def api_wait(self, **kwargs):
+        """
+        For testing purposes, here's a call that always fails. We need to be
+        sure that tests also fail in that case.
+        """
+        logger.debug('api_wait called, kwargs: {}'.format(kwargs))
+
     def api_status(self):
         """
         A blocking API call returning currently known status of the server

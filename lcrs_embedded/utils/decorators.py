@@ -24,7 +24,7 @@ def threaded_api_request(JobType=Job):
             """
             :param: instance: JSONRequestHandler instance
             """
-            job_id = instance.scheduler.add_job(JobType)
+            job_id = instance.scheduler.add_job(JobType, **kwargs)
             instance.respond_job_id(job_id)
             return method(instance, *args, **kwargs)
 

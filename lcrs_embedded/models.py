@@ -37,6 +37,10 @@ class StateResponse(Response):
 
     #: Something from STATES
     state_id = None
+    #: List of active job ids
+    active_jobs = None
+    #: Status list of all job ids
+    job_status = None
 
 
 class ScanResult(Response):
