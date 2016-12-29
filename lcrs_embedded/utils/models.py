@@ -10,7 +10,6 @@ class JSONModel(dict):
     Used to map classes to models. It's nice because we can then use
     Django-like models to model the whole protocol.
     """
-    pass
 
     def __init__(self, **kwargs):
         super(JSONModel, self).__init__(**kwargs)
@@ -22,16 +21,14 @@ class JSONModel(dict):
             if not x.startswith("__") and x not in parent_dict:
                 # Make sure that fresh instances are created of mutable objects
                 static_attr = getattr(self, x)
-                # Need to explore why this is needed because the copy() method
-                # of the JSONModel type produces a dict
-                # if hasattr(static_attr, 'copy'):
-                #     new_instance = static_attr.copy()
-                #     if not type(new_instance) == type(static_attr):
-                #         print("Not equal: {}, {}".format(
-                #             type(new_instance), type(static_attr))
-                #         )
-                # else:
-                #     new_instance = static_attr
+                if hasattr(static_attr, 'copy'):
+                    new_instance = static_attr.copy()
+                    if not type(new_instance) == type(static_attr):
+                        print("Not equal: {}, {}".format(
+                            type(new_instance), type(static_attr))
+                        )
+                else:
+                    new_instance = static_attr
                 new_instance = static_attr
                 setattr(self, x, new_instance)
         dict.__setitem__(self, "__type__", self.__class__.__name__)
@@ -55,6 +52,9 @@ class JSONModel(dict):
             )
         dict.__setattr__(self, key, value)
         super(JSONModel, self).__setitem__(key, value)
+
+    # def copy(self, *args, **kwargs):
+    #     JSONModel(**dict.copy(self, *args, **kwargs))
 
 
 def decoder(dct):

@@ -135,8 +135,6 @@ class ScanResult(Response):
     dmesg = None
 
     def __setattr__(self, key, value):
-        if key == 'disk_controllers' and bool(value):
-            raise Exception(value)
         Response.__setattr__(self, key, value)
 
 
