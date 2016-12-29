@@ -31,16 +31,18 @@ class JobResponse(Response):
 
     #: A number denoting the job
     job_id = None
+    #: Progress, as 0.0-1.0
+    progress = 0.0
+    #: Status
+    status = None
 
 
 class StateResponse(Response):
 
     #: Something from STATES
     state_id = None
-    #: List of active job ids
-    active_jobs = None
-    #: Status list of all job ids
-    job_status = None
+    #: Status of a requested job, None if no job specified
+    job_response = None
 
 
 class ScanResult(Response):

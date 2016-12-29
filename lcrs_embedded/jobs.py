@@ -52,8 +52,6 @@ class WaitJob(Job):
     """
     Purpose: testing
     """
-    def __init__(self, *args, **kwargs):
-        super(WaitJob, self).__init__(*args, **kwargs)
 
     def job(self, **kwargs):
         logger.debug(kwargs)

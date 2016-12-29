@@ -93,16 +93,37 @@ class LCRSRequestHandler(JSONRequestHandler):
         """
         logger.debug('api_wait called, kwargs: {}'.format(kwargs))
 
-    def api_status(self):
+    def api_status(self, **kwargs):
         """
         A blocking API call returning currently known status of the server
         """
-        self.respond(
-            content_type="application/json",
-            body=json.dumps(models.StateResponse(
-                state_id=self.server.lcrs_state
-            ))
+        logger.debug("api_status called, kwargs: {}".format(kwargs))
+        job_id = kwargs.get('job_id', None)
+        if job_id:
+            logger.debug("Return status for job_id: {}".format(job_id))
+            try:
+                job = self.scheduler.jobs.get(job_id)
+                job_response = models.JobResponse(
+                    job_id=job_id,
+                    progress=job['job'].progress,
+                    status=job['job'].status,
+                )
+                self.respond_object(
+                    models.StateResponse(
+                        state_id=self.server.lcrs_state,
+                        job_response=job_response
+                    )
+                )
+                return
+            except KeyError:
+                self.respond_object(
+                    models.StateResponse(state_id=self.server.lcrs_state)
+                )
+                return
+        self.respond_object(
+            models.StateResponse(state_id=self.server.lcrs_state)
         )
+        return
 
     @threaded_api_request(jobs.ScanJob)
     def api_scan(self):
@@ -115,9 +136,12 @@ class LCRSRequestHandler(JSONRequestHandler):
         """
         Sends back a response containing a job id
         """
+        self.respond_object(models.JobResponse(job_id=job_id))
+
+    def respond_object(self, obj):
         self.respond(
             content_type="application/json",
-            body=json.dumps(models.JobResponse(job_id=job_id)),
+            body=json.dumps(obj)
         )
 
 

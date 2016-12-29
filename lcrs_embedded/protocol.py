@@ -25,6 +25,23 @@ STATES = set((
 ))
 
 
+#: Job is still running
+JOB_ACTIVE = "ACTIVE"
+#: Job has finished with errors
+JOB_FAILED = "FAIL"
+#: Job has finished correctly
+JOB_FINISHED = "FINISHED"
+#: Requested job is unknown
+JOB_UNKNOWN = "UNKNOW"
+
+#: Allowed states of a job
+JOB_STATES = set((
+    JOB_ACTIVE,
+    JOB_FAILED,
+    JOB_FINISHED,
+    JOB_UNKNOWN,
+))
+
 #: Start scanning for hardware
 COMMAND_SCAN = "SCAN"
 

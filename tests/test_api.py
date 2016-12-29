@@ -1,10 +1,9 @@
-import json
 import logging
+import time
 from threading import ThreadError
 
 import pytest
 from lcrs_embedded import protocol
-from lcrs_embedded.utils.models import decoder
 
 from . import *  # noqa  # This loads the fixtures that are in __init__.py
 from . import utils
@@ -27,9 +26,8 @@ def test_status_api(runserver):
     remote thread.
     """
     logger.info("Testing the API status...")
-    response = utils.request_api_endpoint("/api/v1/status/")
-    response = response.content.decode("utf-8")
-    assert json.loads(response)['state_id'] == protocol.STATE_IDLE
+    response = utils.request_api_as_json("/api/v1/status/")
+    assert response['state_id'] == protocol.STATE_IDLE
 
 
 def test_status_busy_api(runserver):
@@ -38,12 +36,23 @@ def test_status_busy_api(runserver):
     remote thread.
     """
     logger.info("Testing the API status...")
-    response = utils.request_api_endpoint(
+
+    job_duration = 3
+
+    response = utils.request_api_as_json(
         "/api/v1/wait/",
-        data={'wait_time': 3},
+        data={'wait_time': job_duration},
     )
-    response = response.content.decode("utf-8")
-    assert json.loads(response)['job_id'] > 0
+    job_id = response['job_id']
+    assert job_id > 0
+
+    for i in range(job_duration):
+        status = utils.request_api_as_object(
+            "/api/v1/status/",
+            data={'job_id': job_id},
+        )
+        assert status.job_response.progress <= i
+        time.sleep(i)
 
 
 def test_fail_api(runserver):
@@ -62,9 +71,7 @@ def test_scan_api(runserver):
     remote thread.
     """
     logger.info("Testing the API status...")
-    response = utils.request_api_endpoint("/api/v1/scan/")
-    response = response.content.decode("utf-8")
-    job = json.loads(response, object_hook=decoder)
+    job = utils.request_api_as_object("/api/v1/scan/")
     assert job.job_id > 0
 
 

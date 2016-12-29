@@ -1,6 +1,8 @@
+import json
 import logging
-import requests
 
+import requests
+from lcrs_embedded.utils.models import decoder
 from requests.exceptions import ConnectionError
 
 from .context import assert_no_thread_exceptions
@@ -33,6 +35,16 @@ def request_api_endpoint(urlpath, data=None):
             return response
         except ConnectionError:
             raise AssertionError("Server isn't alive")
+
+
+def request_api_as_json(urlpath, data=None):
+    response = request_api_endpoint(urlpath, data)
+    return json.loads(response.content.decode("utf-8"))
+
+
+def request_api_as_object(urlpath, data=None):
+    response = request_api_endpoint(urlpath, data)
+    return json.loads(response.content.decode("utf-8"), object_hook=decoder)
 
 
 def request_get(urlpath):

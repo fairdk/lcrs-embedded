@@ -22,10 +22,17 @@ class JSONModel(dict):
             if not x.startswith("__") and x not in parent_dict:
                 # Make sure that fresh instances are created of mutable objects
                 static_attr = getattr(self, x)
-                if hasattr(static_attr, 'copy'):
-                    new_instance = static_attr.copy()
-                else:
-                    new_instance = static_attr
+                # Need to explore why this is needed because the copy() method
+                # of the JSONModel type produces a dict
+                # if hasattr(static_attr, 'copy'):
+                #     new_instance = static_attr.copy()
+                #     if not type(new_instance) == type(static_attr):
+                #         print("Not equal: {}, {}".format(
+                #             type(new_instance), type(static_attr))
+                #         )
+                # else:
+                #     new_instance = static_attr
+                new_instance = static_attr
                 setattr(self, x, new_instance)
         dict.__setitem__(self, "__type__", self.__class__.__name__)
         dict.__setattr__(self, "__type__", self.__class__.__name__)
@@ -52,8 +59,13 @@ class JSONModel(dict):
 
 def decoder(dct):
     from .. import models
+    if not isinstance(dct, dict):
+        return dct
     Klass = dct.pop('__type__', "")
     if Klass:
+        for k, v in dct.items():
+            dct[k] = decoder(v)
+            print("It was: {}".format(type(dct[k])))
         return getattr(models, Klass, dict)(**dct)
     else:
         return dict(**dct)
