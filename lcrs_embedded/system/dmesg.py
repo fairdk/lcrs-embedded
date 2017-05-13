@@ -22,8 +22,6 @@ def dmesg_analysis(scan_result, stdout, stderr, succeeded):
 
     scan_result.dmesg = stdout
 
-    logger.info("called")
-
     # Detect hard drives in dmesg
     p = re.compile(r"\[(sd.)\].+(hardware sectors|logical blocks)", re.I)
     harddrives = []

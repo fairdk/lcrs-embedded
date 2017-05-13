@@ -29,7 +29,6 @@ class JSONModel(dict):
                         )
                 else:
                     new_instance = static_attr
-                new_instance = static_attr
                 setattr(self, x, new_instance)
         dict.__setitem__(self, "__type__", self.__class__.__name__)
         dict.__setattr__(self, "__type__", self.__class__.__name__)
@@ -39,7 +38,7 @@ class JSONModel(dict):
             raise KeyError("Not a defined model attribute of {}".format(
                 type(self))
             )
-        setattr(self, key, value)
+        super(JSONModel, self).__setattr__(key, value)
         super(JSONModel, self).__setitem__(key, value)
 
     def __delitem__(self, key):
@@ -50,8 +49,7 @@ class JSONModel(dict):
             raise KeyError("Not a defined model attribute of {}".format(
                 type(self))
             )
-        dict.__setattr__(self, key, value)
-        super(JSONModel, self).__setitem__(key, value)
+        self.__setitem__(key, value)
 
     # def copy(self, *args, **kwargs):
     #     JSONModel(**dict.copy(self, *args, **kwargs))
