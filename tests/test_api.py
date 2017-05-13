@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 from threading import ThreadError
@@ -53,6 +54,23 @@ def test_status_busy_api(runserver):
         )
         assert status.job_response.progress <= i
         time.sleep(i)
+
+
+def test_api_json_in_post_data(runserver):
+    """
+    This test ensures that we keep support having data=<json data> as the
+    request body for a POST request.
+    """
+    logger.info("Testing the API status...")
+
+    response = utils.request_api_endpoint(
+        "/api/v1/status/?json_param=data",
+        raw_body={'data': json.dumps({'job_id': 3})},
+    )
+    json_response = json.loads(response.content.decode("utf-8"))
+    job_response = json_response['job_response']
+    assert job_response['job_id'] > 0
+    assert job_response['status'] == protocol.JOB_UNKNOWN
 
 
 def test_fail_api(runserver):

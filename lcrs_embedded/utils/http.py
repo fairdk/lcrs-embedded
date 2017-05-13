@@ -36,7 +36,8 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
     static_srv = "/path/to/static/files"
 
     # Example: /api/v1/format-drive/force/
-    api_url_scheme = r"/api/v([0-9]+)/(?P<command>.+)/(?P<flags>.*)"
+    api_url_scheme = \
+        r"/api/v([0-9]+)/(?P<command>.+)/(?P<flags>[^?]*)(\?(?P<query>.+))?"
 
     def respond(
         self,
@@ -110,6 +111,9 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
 
         command_name = url_match.group('command')
 
+        query_string = url_match.group('query')
+        query_params = urllib.parse.parse_qs(query_string)
+
         command_callable = getattr(self, 'api_{}'.format(command_name), None)
         if not command_callable:
             logger.error("Invalid command ID: {}".format(command_name))
@@ -138,7 +142,9 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
 
         if data:
             data = data.decode('utf-8')
-            data = urllib.parse.parse_qs(data).get('data', [""])[0]
+            json_param = query_params.get('json_param', None)
+            if json_param:
+                data = urllib.parse.parse_qs(data).get(json_param[0], [""])[0]
             kwargs = json.loads(data)
         else:
             kwargs = {}

@@ -115,9 +115,16 @@ class LCRSRequestHandler(JSONRequestHandler):
                     )
                 )
                 return
-            except KeyError:
+            except (KeyError, TypeError):
                 self.respond_object(
-                    models.StateResponse(state_id=self.server.lcrs_state)
+                    models.StateResponse(
+                        state_id=self.server.lcrs_state,
+                        job_response=models.JobResponse(
+                            job_id=job_id,
+                            progress=0,
+                            status=protocol.JOB_UNKNOWN,
+                        )
+                    )
                 )
                 return
         self.respond_object(

@@ -22,12 +22,16 @@ def get_url(urlpath):
     return "http://{}:{}{}".format(SERVER_HOST, SERVER_TEST_PORT, urlpath)
 
 
-def request_api_endpoint(urlpath, data=None):
+def request_api_endpoint(urlpath, data=None, raw_body=None):
     with assert_no_thread_exceptions():
         url = get_url(urlpath)
         logger.debug("Testing API endpoint, url: {}".format(url))
         try:
-            response = requests.post(url, json=data)
+            if raw_body:
+                kwargs = {'data': raw_body}
+            else:
+                kwargs = {'json': data}
+            response = requests.post(url, **kwargs)
             if not response.status_code == 200:
                 raise WrongStatusCode("Status code was {}".format(
                     response.status_code
