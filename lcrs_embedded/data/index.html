@@ -22,13 +22,13 @@
     </select>
     <br><br>
 
-    <textarea name="data">
-    {
-      "blah": 123,
-    }
-    </textarea>
+<textarea name="data">
+{
+  "blah": 123
+}
+</textarea>
 
-    <button type="button" onclick="this.form.action=this.form.commandwhatever.value; this.form.submit()">SEND</button>
+    <button type="button" onclick="this.form.action=this.form.commandwhatever.value + '?json_param=data'; this.form.submit()">SEND</button>
 
   </form>
 
