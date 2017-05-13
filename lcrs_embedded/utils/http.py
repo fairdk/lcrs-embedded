@@ -5,7 +5,9 @@ import posixpath
 import re
 import select
 import sys
+
 import urllib
+
 from http import HTTPStatus
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
@@ -136,6 +138,7 @@ class JSONRequestHandler(SimpleHTTPRequestHandler):
 
         if data:
             data = data.decode('utf-8')
+            data = urllib.parse.parse_qs(data).get('data', [""])[0]
             kwargs = json.loads(data)
         else:
             kwargs = {}
