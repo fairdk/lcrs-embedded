@@ -123,10 +123,10 @@ def test_battery():
     assert not scan_result.battery
 
 
-def test_eject():
+def test_cdrom_eject():
     """
-    This test is always mocked, CI cannot read /proc, but a part from that,
-    we don't get consistent output to test in these files anyways.
+    Naturally, this test is mocked, as most CIs and dev laptops don't have
+    cdrom drives :)
     """
     from lcrs_embedded.system.cdrom_eject import eject
     from lcrs_embedded.models import ScanResult

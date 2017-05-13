@@ -7,8 +7,7 @@ logger = logging.getLogger(__name__)
 
 def eject(scan_result, *args, **kwargs):
     """
-    default_mock = True because dmesg output is different depending on Kernel.
-    Ubuntu Kernel does not report logical blocks/hardware sectors.
+
     """
     if not scan_result.cdrom:
         logger.info("No CD drive found to eject")
