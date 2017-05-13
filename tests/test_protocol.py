@@ -18,6 +18,20 @@ def test_model():
         h = models.Harddrive()
         del h['sata']
 
+    def create_list():
+        s = models.ScanResult()
+        s.disk_controllers.append(models.DiskController())
+        s.disk_controllers.append(models.DiskController())
+        assert len(s.disk_controllers) == 2
+        for controller in s.disk_controllers:
+            assert bool(controller)
+        assert len(s.disk_controllers) == 2
+
+    # Various tests to ensure that we don't have some immutable stuff or
+    # leakage between different instances.
+    create_list()
+    create_list()
+
 
 def test_serialization():
     from lcrs_embedded import models

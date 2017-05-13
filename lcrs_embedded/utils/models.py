@@ -29,32 +29,36 @@ class JSONModel(dict):
                         )
                 else:
                     new_instance = static_attr
-                new_instance = static_attr
                 setattr(self, x, new_instance)
         dict.__setitem__(self, "__type__", self.__class__.__name__)
         dict.__setattr__(self, "__type__", self.__class__.__name__)
 
     def __setitem__(self, key, value):
-        if not hasattr(self, key):
-            raise KeyError("Not a defined model attribute of {}".format(
-                type(self))
+        if not hasattr(self, key) and not key == '__type__':
+            raise KeyError(
+                "{} not a defined model attribute of {}".format(
+                    key,
+                    type(self)
+                )
             )
-        setattr(self, key, value)
+        super(JSONModel, self).__setattr__(key, value)
         super(JSONModel, self).__setitem__(key, value)
 
     def __delitem__(self, key):
         raise NotImplementedError()
 
     def __setattr__(self, key, value):
-        if not hasattr(self, key):
-            raise KeyError("Not a defined model attribute of {}".format(
-                type(self))
+        if not hasattr(self, key) and not key == '__type__':
+            raise KeyError(
+                "{} not a defined model attribute of {}".format(
+                    key,
+                    type(self)
+                )
             )
-        dict.__setattr__(self, key, value)
-        super(JSONModel, self).__setitem__(key, value)
+        self.__setitem__(key, value)
 
-    # def copy(self, *args, **kwargs):
-    #     JSONModel(**dict.copy(self, *args, **kwargs))
+    def copy(self, *args, **kwargs):
+        return self.__class__(**dict.copy(self, *args, **kwargs))
 
 
 def decoder(dct):
@@ -65,7 +69,6 @@ def decoder(dct):
     if Klass:
         for k, v in dct.items():
             dct[k] = decoder(v)
-            print("It was: {}".format(type(dct[k])))
         return getattr(models, Klass, dict)(**dct)
     else:
         return dict(**dct)

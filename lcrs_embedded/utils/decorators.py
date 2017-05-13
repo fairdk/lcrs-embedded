@@ -104,7 +104,6 @@ def run_command(command, timeout=1, mock_in_test=False, ignore_fail=False):
                     stdout, stderr, succeeded = wrapper.mock_output, "", True
                 else:
                     stdout, stderr, succeeded = "", mock_failure, False
-                    logger.error("called")
 
             if not succeeded and ignore_fail:
                 return
