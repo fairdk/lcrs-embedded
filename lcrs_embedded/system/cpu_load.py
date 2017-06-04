@@ -34,13 +34,3 @@ def multiple_processes_load_cpu(scan_result, duration_in_seconds):
     for n in range(number_of_processes):
         processes[n].join()
     logger.info("Finished generating load on CPU, time {}".format(int(time.time())))
-
-
-if __name__ == "__main__":
-    from lcrs_embedded.models import ScanResult
-    
-    scan_result = ScanResult(
-        processor_cores=2
-    )
-    multiple_processes_load_cpu(scan_result, 10)
-    
