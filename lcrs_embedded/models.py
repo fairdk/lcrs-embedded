@@ -65,6 +65,7 @@ class ScanResult(Response):
     processor_cores = None
     #: Raw, unparsed model name from cpuinfo
     processor_model_name = None
+    processor_load_status = None
 
     battery = None
 

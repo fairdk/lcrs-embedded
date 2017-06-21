@@ -12,14 +12,29 @@ def test_cpu_load(runserver):
     """
     Test duration of load of CPU.
     """
-    from lcrs_embedded.system.cpu_load import multiple_processes_load_cpu
-    logger.info("Testing duration of load of CPU...")
+    from lcrs_embedded.system.cpu_load import cpu_load
+    logger.info("Testing duration of load of CPU with two cores")
     duration_in_seconds = 1
-    startTime = int(time.time())
+    startTime = time.time()
     scan_result = ScanResult(
-        processor_cores=1
+        processor_cores=2
     )
-    multiple_processes_load_cpu(scan_result, duration_in_seconds)
-    actual_duration = int(time.time()) - startTime
+    cpu_load(scan_result, duration_in_seconds)
+    actual_duration = time.time() - startTime
+    assert actual_duration >= duration_in_seconds
+    assert actual_duration <= duration_in_seconds + 1
+    assert scan_result.processor_load_status == "Complete"
+
+def test_timed_cpu_load(runserver):
+    """
+    Test duration of load of CPU with a call in same process.
+    """
+    from lcrs_embedded.system.cpu_load import timed_cpu_load
+    logger.info("Testing duration of load of CPU with one core")
+    duration_in_seconds = 3
+    startTime = time.time()
+    endTime = startTime + duration_in_seconds
+    timed_cpu_load(endTime)
+    actual_duration = time.time() - startTime
     assert actual_duration >= duration_in_seconds
     assert actual_duration <= duration_in_seconds + 1
