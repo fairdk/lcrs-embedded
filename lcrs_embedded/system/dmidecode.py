@@ -103,6 +103,7 @@ def dmidecode_baseboard(scan_result, stdout, stderr, succeeded):
 
     fetch_rows(scan_result, stdout, row_map)
 
+
 dmidecode_baseboard.mock_output = """
 # dmidecode 3.0
 Getting SMBIOS data from sysfs.
@@ -150,6 +151,7 @@ def dmidecode_chassis(scan_result, stdout, stderr, succeeded):
     }
 
     fetch_rows(scan_result, stdout, row_map)
+
 
 dmidecode_chassis.mock_output = """
 # dmidecode 3.0
@@ -326,6 +328,7 @@ def dmidecode_processor(scan_result, stdout, stderr, succeeded):
         }
 
         fetch_rows(scan_result, match, row_map, type_map=type_map)
+
 
 dmidecode_processor.mock_output = """
 # dmidecode 3.0
