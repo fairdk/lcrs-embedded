@@ -63,6 +63,7 @@ class ScanResult(Response):
     processor_family = None
     processor_manufacturer = None
     processor_cores = None
+    processor_threads = None
     #: Raw, unparsed model name from cpuinfo
     processor_model_name = None
     processor_load_status = None

@@ -17,7 +17,7 @@ def test_cpu_load(runserver):
     duration_in_seconds = 1
     startTime = time.time()
     scan_result = ScanResult(
-        processor_cores=2
+        processor_threads=2
     )
     cpu_load(scan_result, duration_in_seconds)
     actual_duration = time.time() - startTime
