@@ -38,6 +38,7 @@ def _bat0_present(scan_result, file_contents, readable):
     if not battery_present:
         scan_result.battery = None
 
+
 _bat0_present.mock_output = """1"""
 _bat0_present.expected_result = {
     'battery': models.Battery()
@@ -69,6 +70,7 @@ def battery_file_factory(
         'battery': models.Battery(**{attr_name: mock_result})
     }
     return func
+
 
 _bat0_capacity = battery_file_factory(
     "capacity_",
