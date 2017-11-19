@@ -10,6 +10,7 @@ Contents:
    :maxdepth: 2
 
    buildroot
+   tdd
 
 Getting started
 ---------------

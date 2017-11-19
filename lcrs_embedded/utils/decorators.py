@@ -54,10 +54,22 @@ def run_command(command, timeout=1, mock_in_test=False, ignore_fail=False):
     Runs a command, calling the decorated function with the results of the
     command.
 
-    :param: ignore_fail: If command fails, skip everything
+    .. note::
+        This command is hard to understand without reading how its applied in
+        :mod:`lcrs_embedded.system`
+
+    Any decorated function can be called with parameter ``mock_failure``
+    because of the decorated function returned by ``outer_wrapper``.
+
+    :param ignore_fail: If command fails, skip running the decorated function
+    :param mock_in_test: Do not call actual command in tests, instead use
+                         supplied test data
     """
 
     def run_command():
+        """
+        Creates a sub process and returns outputs and return code.
+        """
 
         try:
             logger.debug("Running command {}".format(command))
@@ -80,7 +92,7 @@ def run_command(command, timeout=1, mock_in_test=False, ignore_fail=False):
 
         return stdout, stderr, succeeded
 
-    def outer_rapper(func):
+    def outer_wrapper(func):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -118,7 +130,7 @@ def run_command(command, timeout=1, mock_in_test=False, ignore_fail=False):
 
         return wrapper
 
-    return outer_rapper
+    return outer_wrapper
 
 
 def readfile(file_path, mock_in_test=False):
@@ -128,7 +140,7 @@ def readfile(file_path, mock_in_test=False):
 
     """
 
-    def outer_rapper(func):
+    def outer_wrapper(func):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -168,4 +180,4 @@ def readfile(file_path, mock_in_test=False):
 
         return wrapper
 
-    return outer_rapper
+    return outer_wrapper
