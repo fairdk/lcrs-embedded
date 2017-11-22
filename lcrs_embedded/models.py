@@ -193,6 +193,16 @@ class Harddrive(JSONModel):
     #: Raw command output
     sysblock_raw = None
 
+    #: Disk overwrite
+    sample_random_offset = None
+    sample_before = None
+    sample_after = None
+
+
+class HarddriveSample(JSONModel):
+    status = None
+    result = None
+
 
 class Battery(JSONModel):
     """
