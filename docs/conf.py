@@ -12,9 +12,12 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+from __future__ import unicode_literals
 
 import os
 import sys
+
+from datetime import datetime
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
@@ -41,7 +44,21 @@ import lcrs_embedded  # noqa
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.viewcode',
+]
+
+extlinks = {
+    'url-issue': ('https://github.com/fairdk/lcrs-embedded/issues/%s', '#'),
+}
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -56,8 +73,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Large-scale Computer Reuse Suite (LCRS)'
-copyright = u"2016, Benjamin Bach"
+project = 'lcrs-embedded'
+copyright = "{}, Benjamin Bach".format(datetime.now().year)
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -224,8 +241,8 @@ latex_elements = {
 # [howto/manual]).
 latex_documents = [
     ('index', 'lcrs_embedded.tex',
-     u'Large-scale Computer Reuse Suite (LCRS) Documentation',
-     u'Benjamin Bach', 'manual'),
+     'lcrs-embedded',
+     'Benjamin Bach', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at
@@ -255,8 +272,8 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'lcrs_embedded',
-     u'Large-scale Computer Reuse Suite (LCRS) Documentation',
-     [u'Benjamin Bach'], 1)
+     'lcrs-embedded',
+     ['Benjamin Bach'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -270,8 +287,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'lcrs_embedded',
-     u'Large-scale Computer Reuse Suite (LCRS) Documentation',
-     u'Benjamin Bach',
+     'lcrs-embedded',
+     'Benjamin Bach',
      'lcrs_embedded',
      'One line description of project.',
      'Miscellaneous'),

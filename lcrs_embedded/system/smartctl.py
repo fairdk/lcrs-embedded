@@ -65,7 +65,7 @@ def _smartinfo_drive(drive):
 
     command = "smartctl -i /dev/{}".format(drive.dev)
 
-    @run_command(command, mock_in_test=True, ignore_fail=True)
+    @run_command(command, mock_in_test=True, ignore_fail=False)
     def _smart_meta(drive, stdout, stderr, succeeded):
         """
         default_mock = True because dmidecode needs root privileges

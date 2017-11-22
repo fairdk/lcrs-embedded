@@ -6,9 +6,6 @@ from setuptools import setup
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
-    history = history_file.read()
-
 requirements = [
     'docopt',
     'colorlog'
@@ -28,7 +25,7 @@ setup(
         "The embedded component of LCRS - Software for computer refurbishment "
         "workshops: Wipe disks, test hardware, store results in database."
     ),
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author="Benjamin Bach",
     author_email='benjamin@fairdanmark.dk',
     url='https://github.com/fairdk/lcrs-embedded',
