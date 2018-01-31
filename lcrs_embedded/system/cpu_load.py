@@ -32,8 +32,8 @@ def cpu_load(scan_result, duration_in_seconds):
         Start a number of processes that each do simple arithmetics to
         generate a load on the CPU for a number of seconds.
         """
-        number_of_processes = scan_result.processor_cores
-
+        number_of_processes = scan_result.processor_threads
+        
         startTime = time.time()
         endTime = startTime + duration_in_seconds
         logger.info(

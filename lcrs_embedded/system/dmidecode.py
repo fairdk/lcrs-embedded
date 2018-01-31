@@ -320,10 +320,12 @@ def dmidecode_processor(scan_result, stdout, stderr, succeeded):
             'Manufacturer': 'processor_manufacturer',
             'Family': 'processor_family',
             'Core Count': 'processor_cores',
+            'Thread Count': 'processor_threads',
             'Max Speed': 'processor_mhz',
         }
         type_map = {
             'processor_cores': clean_int,
+            'processor_threads': clean_int,
             'processor_mhz': clean_int,
         }
 

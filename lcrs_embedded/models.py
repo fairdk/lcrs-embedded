@@ -63,6 +63,7 @@ class ScanResult(Response):
     processor_family = None
     processor_manufacturer = None
     processor_cores = None
+    processor_threads = None
     #: Raw, unparsed model name from cpuinfo
     processor_model_name = None
     processor_load_status = None
@@ -191,6 +192,16 @@ class Harddrive(JSONModel):
     blockdev_raw = None
     #: Raw command output
     sysblock_raw = None
+
+    #: Disk overwrite
+    sample_random_offset = None
+    sample_before = None
+    sample_after = None
+
+
+class HarddriveSample(JSONModel):
+    status = None
+    result = None
 
 
 class Battery(JSONModel):
